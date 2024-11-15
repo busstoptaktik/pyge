@@ -1,0 +1,25 @@
+# pyproject.toml
+# https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+
+[build-system]
+requires = ['setuptools>=43.0.0']
+build-backend = 'setuptools.build_meta'
+
+[project]
+name = "pyge"
+requires-python = ">= 3.10"
+description = "PYthon GEodesy"
+version = "2024.11.12"
+dependencies = ["black>=22.6", "pytest"]
+authors = [ {name = "Thomas Knudsen", email = "thokn@kds.dk"} ]
+maintainers = [ {name = "Thomas Knudsen", email = "thokn@kds.dk"} ]
+readme = "README.md"
+keywords = ["geodesy", "geoscience"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License"
+]
+
+# https://stackoverflow.com/a/49033954/618276
+[tool.pytest.ini_options]
+pythonpath = ["."]

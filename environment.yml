@@ -1,0 +1,14 @@
+name: pyge-dev
+channels:
+  - conda-forge
+  - msys2
+dependencies:
+  - black=22.6.*
+  - click=8.1.*
+  - fiona=1.8.*
+  - graphviz=4.0.*
+  - matplotlib=3.*
+  - pyproj=3.3.*
+  - python=3.10.*
+  - xmltodict=0.13.*
+  - pytest
