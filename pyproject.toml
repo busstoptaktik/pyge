@@ -1,8 +1,10 @@
 # pyproject.toml
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
+#
+# pip install -e .
 
 [build-system]
-requires = ['setuptools>=43.0.0']
+requires = ['setuptools>=61.0']
 build-backend = 'setuptools.build_meta'
 
 [project]
@@ -20,6 +22,12 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 
+# https://setuptools.pypa.io/en/stable/userguide/entry_point.html
+[project.scripts]
+plonk = "cli:plonk"
+plink = "cli:plink"
+
 # https://stackoverflow.com/a/49033954/618276
+# https://docs.pytest.org/en/stable/getting-started.html
 [tool.pytest.ini_options]
 pythonpath = ["."]

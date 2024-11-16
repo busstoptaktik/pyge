@@ -1,6 +1,7 @@
 from pyge import Documentation
 from pytest import raises
 
+
 class Doctest(Documentation):
     pass
 

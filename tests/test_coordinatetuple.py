@@ -80,6 +80,25 @@ def test_coor2d():
     assert cc.as_list() == [1.0, 55.0]
     assert cc.as_tuple() == (1.0, 55.0)
 
+    # Promote a 2D coordinate tuple to 4D
+    mask = nan, nan, 0.0, 2020.0
+    assert cc.as_promoted_list(mask) == [1.0, 55.0, 0.0, 2020.0]
+
+    # Nothing happens for shorter masks
+    mask = [0, 2020]
+    assert cc.as_promoted_list(mask) == [1.0, 55.0]
+    mask = []
+    assert cc.as_promoted_list(mask) == [1.0, 55.0]
+
+    # Fill in also works
+    mask = 1, 2, nan, nan, 456
+    cc = Coor2D(nan, nan)
+    assert cc.as_promoted_list(mask) == [1.0, 2.0, nan, nan, 456.0]
+
+    # The default value for mask is [nan, nan, 0, nan]
+    cc = Coor2D(1, 2)
+    assert cc.as_promoted_list() == [1.0, 2.0, 0.0, nan]
+
 
 def test_coor1d():
     cc = Coor1D(1.0)

@@ -1,10 +1,12 @@
-"""Generic abstract class for coordinate tuples,
-and concrete implementations for 1-4 dimensions
+"""Generic abstract class for coordinate tuples.
+
+Also concrete implementations for 1-4 dimensions:
+Coor1D, Coor2D, Coor3D, Coor4D
 """
 
 from abc import ABC, abstractmethod
 from .documentation import Documentation
-from math import nan
+from math import nan, isnan
 
 
 class CoordinateTuple(ABC):
@@ -16,6 +18,26 @@ class CoordinateTuple(ABC):
     @abstractmethod
     def as_list(self) -> list[float]:
         ...
+
+    def as_promoted_list(
+        self, mask: list[float] | tuple[float] = [nan, nan, 0, nan]
+    ) -> list[float]:
+        """Promote the n-dimensional base coordinate tuple to the m-dimensions of the mask.
+
+        The default value represents the common case of promoting 2D coordinates to 4D
+        by providing values interpretable as a zero ellipsoidal height and an undefined
+        time coordinate
+        """
+
+        # First, extend the tuple using the tail of the mask
+        result = [*self.as_list(), *(mask[self.dim() :])]
+
+        # Then update NaNs in the original coordinate tuple, with mask content
+        for (index, value) in enumerate(mask):
+            if isnan(result[index]):
+                result[index] = float(value)
+
+        return result
 
     def as_tuple(self) -> tuple[float]:
         return tuple(self.as_list())
@@ -76,13 +98,12 @@ class Coor4D(CoordinateTuple, Documentation):
         return self.c
 
 
-class Coor3D(CoordinateTuple):
+class Coor3D(CoordinateTuple, Documentation):
     """3D coordinate tuple"""
 
-    c = [nan, nan, nan]
-
-    def __init__(self, x: float, y: float, z: float):
-        self.c = [float(x), float(y), float(z)]
+    @property
+    def brief(self) -> str | None:
+        return "Generic 3D coordinate tuple"
 
     def dim(self) -> int:
         return 3
@@ -102,13 +123,12 @@ class Coor3D(CoordinateTuple):
         return self.c
 
 
-class Coor2D(CoordinateTuple):
-    """2D coordinate tuple"""
+class Coor2D(CoordinateTuple, Documentation):
+    """4D coordinate tuple"""
 
-    c = [nan, nan]
-
-    def __init__(self, x: float, y: float):
-        self.c = [float(x), float(y)]
+    @property
+    def brief(self) -> str | None:
+        return "Generic 2D coordinate tuple"
 
     def dim(self) -> int:
         return 2
@@ -128,10 +148,12 @@ class Coor2D(CoordinateTuple):
         return self.c
 
 
-class Coor1D(CoordinateTuple):
+class Coor1D(CoordinateTuple, Documentation):
     """1D coordinate tuple"""
 
-    c = [nan]
+    @property
+    def brief(self) -> str | None:
+        return "Generic 1D coordinate tuple"
 
     def __init__(self, z: float):
         self.c = [float(z)]
