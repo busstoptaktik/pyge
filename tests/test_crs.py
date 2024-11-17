@@ -1,5 +1,4 @@
-from pyge import CoordinateSetLoL, Crs
-from math import nan
+from pyge import Crs
 
 
 def test_crs():
@@ -13,11 +12,3 @@ def test_crs():
 
     # Optional documentation
     assert etrs89dnk.brief == None
-
-
-# etrs89_xyz_to_geo = {
-#     "from": "etrs89_xyz",
-#     "to": "etrs89_geo",
-#     "op": "inv cart ellps=GRS80",
-#     "invertible": True,
-# }

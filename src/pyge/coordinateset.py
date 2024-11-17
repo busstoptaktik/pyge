@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from math import nan, isnan
-from .documentation import Documentation
+from pyge.documentation import Documentation
 
 
 class CoordinateSet(ABC):
@@ -66,7 +66,7 @@ class CoordinateSetLoL(CoordinateSet, Documentation):
     def __init__(self, args: list[list[float]], crs_id: str = "unknown"):
         """Fill coordinate tuple from args. Ignore superfluous args, provide NaN for missing"""
         self.coords = args
-        self_crs_id = crs_id
+        self.crs_id = crs_id
 
     def dim(self) -> int:
         return len(self.coords)
@@ -90,50 +90,3 @@ class CoordinateSetLoL(CoordinateSet, Documentation):
     def __setitem__(self, idx: int, value: list[float]):
         self.set(idx, value)
         return
-
-
-class ReferenceFrame:
-    name: str = None
-    units: tuple[str] = ()
-    attrs: dict[str, str] = {}
-
-    def __init__(self, name: str, units: tuple[str], attrs: dict[str, str] = {}):
-        self.name = name
-        self.units = units
-        self.attrs = attrs
-
-    def dim(self) -> int:
-        return len(self.units)
-
-
-etrs89_xyz_to_geo = {
-    "from": "etrs89_xyz",
-    "to": "etrs89_geo",
-    "op": "inv cart ellps=GRS80",
-    "invertible": True,
-}
-
-etrs89 = ReferenceFrame("etrs89", ("m", "m", "m", "y"))
-
-print(etrs89_xyz_to_geo)
-print(etrs89.units, etrs89.name, etrs89.attrs, etrs89.dim())
-
-etrs89 = ReferenceFrame("etrs89", ("m", "m", "m", "y"), {"bonk": "duns", "foo": "bar"})
-
-print(etrs89_xyz_to_geo)
-print(etrs89.units, etrs89.name, etrs89.attrs, etrs89.dim())
-
-mytuple = ("apple", "banana", "cherry")
-
-for x in mytuple:
-    print(x)
-
-
-def funcy(town):
-    return 42
-
-
-mylist = ["apple", "banana", "cherry"]
-
-mytuple = tuple(funcy(town) for town in mytuple)
-print(mylist, mytuple)

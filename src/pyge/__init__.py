@@ -6,3 +6,4 @@ from pyge.coordinatetuple import *
 from pyge.coordinateset import *
 from pyge.documentation import *
 from pyge.crs import *
+from pyge.operation import *

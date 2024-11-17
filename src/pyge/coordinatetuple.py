@@ -5,8 +5,8 @@ Coor1D, Coor2D, Coor3D, Coor4D
 """
 
 from abc import ABC, abstractmethod
-from .documentation import Documentation
 from math import nan, isnan
+from pyge.documentation import Documentation
 
 
 class CoordinateTuple(ABC):

@@ -10,7 +10,7 @@ from abc import ABC
 
 
 class Documentation(ABC):
-    """Blueprint for a bare minimum documentation collection"""
+    """Blueprint for a bare minimum documentation metadata collection"""
 
     @property
     def item_name(self) -> str | None:

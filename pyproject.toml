@@ -26,6 +26,7 @@ classifiers = [
 [project.scripts]
 plonk = "cli:plonk"
 plink = "cli:plink"
+agurk = "cli:agurk"
 
 # https://stackoverflow.com/a/49033954/618276
 # https://docs.pytest.org/en/stable/getting-started.html
