@@ -51,28 +51,30 @@ class CoordinateSet(ABC):
     # Support direct indexing. Syntactic sugar for the `set` and `get` methods
     # https://stackoverflow.com/questions/6486387/implement-list-like-index-access-in-python
 
-    def __getitem__(self, key: int) -> list[float]:
-        return self.get(key)
+    def __getitem__(self, idx: int) -> list[float]:
+        return self.get(idx)
 
-    def __setitem__(self, key, value: list[float]):
-        self.set(key, value)
+    def __setitem__(self, idx: int, value: list[float]):
+        self.set(idx, value)
         return
 
+    def __len__(self) -> int:
+        return self.len()
 
-class CoordinateSetLoL(CoordinateSet, Documentation):
-    """A "List of Lists" based CoordinateSet, where each coordinate (i.e. x,y,z,t)
+
+class CoordinateSetSoA(CoordinateSet, Documentation):
+    """A "Struct-of-arrays"-style based CoordinateSet, where each coordinate (i.e. x,y,z,t)
     resides in a separate list"""
 
     def __init__(self, args: list[list[float]], crs_id: str = "unknown"):
-        """Fill coordinate tuple from args. Ignore superfluous args, provide NaN for missing"""
         self.coords = args
         self.crs_id = crs_id
 
-    def dim(self) -> int:
-        return len(self.coords)
-
     def len(self) -> int:
         return len(self.coords[0])
+
+    def dim(self) -> int:
+        return len(self.coords)
 
     def get(self, idx: int) -> list[float]:
         return [float(self.coords[i][idx]) for i in range(self.dim())]
@@ -81,12 +83,25 @@ class CoordinateSetLoL(CoordinateSet, Documentation):
         for i in range(min(self.dim(), len(value))):
             self.coords[i][idx] = float(value[i])
 
-    # Support direct indexing. Syntactic sugar for the `set` and `get` methods
-    # https://stackoverflow.com/questions/6486387/implement-list-like-index-access-in-python
 
-    def __getitem__(self, idx: int) -> list[float]:
-        return self.get(idx)
+class CoordinateSetAoS(CoordinateSet, Documentation):
+    """An "array-of-structs"-style based CoordinateSet, where the data is
+    accessed as a list of coordinate tuples (encoded as lists)
+    """
 
-    def __setitem__(self, idx: int, value: list[float]):
-        self.set(idx, value)
-        return
+    def __init__(self, args: list[list[float]], crs_id: str = "unknown"):
+        self.coords = args
+        self.crs_id = crs_id
+
+    def len(self) -> int:
+        return len(self.coords)
+
+    def dim(self) -> int:
+        return len(self.coords[0])
+
+    def get(self, idx: int) -> list[float]:
+        return [float(self.coords[idx][i]) for i in range(self.dim())]
+
+    def set(self, idx: int, value: list[float]):
+        for i in range(min(self.dim(), len(value))):
+            self.coords[idx][i] = float(value[i])

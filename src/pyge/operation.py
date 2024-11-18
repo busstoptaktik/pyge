@@ -39,8 +39,6 @@ class Operation(Documentation):
         self.args = {}
 
         definitions = definition.split("|")
-        print(definitions)
-        print(self.args)
 
         # For a pipeline of operations, fill the steps-list and be done with it
         if len(definitions) > 1:
