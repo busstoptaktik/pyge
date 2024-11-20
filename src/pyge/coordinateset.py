@@ -62,9 +62,9 @@ class CoordinateSet(ABC):
         return self.len()
 
 
-class CoordinateSetSoA(CoordinateSet, Documentation):
-    """A "Struct-of-arrays"-style based CoordinateSet, where each coordinate (i.e. x,y,z,t)
-    resides in a separate list"""
+class CoordinateSetColumnWise(CoordinateSet, Documentation):
+    """A column-store (struct-of-arrays) based CoordinateSet,
+    where each coordinate dimension (i.e. x,y,z,t) resides in a separate list"""
 
     def __init__(self, args: list[list[float]], crs_id: str = "unknown"):
         self.coords = args
@@ -84,8 +84,8 @@ class CoordinateSetSoA(CoordinateSet, Documentation):
             self.coords[i][idx] = float(value[i])
 
 
-class CoordinateSetAoS(CoordinateSet, Documentation):
-    """An "array-of-structs"-style based CoordinateSet, where the data is
+class CoordinateSetRowWise(CoordinateSet, Documentation):
+    """A row-store (array-of-structs) based CoordinateSet, where the data is
     accessed as a list of coordinate tuples (encoded as lists)
     """
 

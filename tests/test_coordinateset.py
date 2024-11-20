@@ -1,4 +1,4 @@
-from pyge import CoordinateSetSoA, CoordinateSetAoS
+from pyge import CoordinateSetColumnWise, CoordinateSetRowWise
 from math import nan
 
 
@@ -7,7 +7,7 @@ def test_coordinatesetsoa():
     y = [21, 22, 23, 24, 25]
     z = [31, 32, 33, 34, 35]
     t = [41, 42, 43, 44, 45]
-    soa = CoordinateSetSoA([x, y, z, t])
+    soa = CoordinateSetColumnWise([x, y, z, t])
 
     assert len(soa) == soa.len()
     assert soa.len() == 5
@@ -41,7 +41,7 @@ def test_coordinatesetsoa():
     # Default promotion in the 2D case
     x = [11, 12, 13, 14, 15]
     y = [21, 22, 23, 24, 25]
-    soa = CoordinateSetSoA([x, y])
+    soa = CoordinateSetColumnWise([x, y])
     assert soa.promoted(1) == [12, 22, 0, nan]
 
     # Mask as Python tuple
@@ -59,7 +59,7 @@ def test_coordinatesetaos():
     x3 = [31, 32, 33, 34]
     x4 = [41, 42, 43, 44]
     x5 = [51, 52, 53, 54]
-    aos = CoordinateSetAoS([x1, x2, x3, x4, x5])
+    aos = CoordinateSetRowWise([x1, x2, x3, x4, x5])
 
     assert len(aos) == aos.len()
     assert aos.len() == 5
@@ -91,7 +91,7 @@ def test_coordinatesetaos():
     # Default promotion in the 2D case
     x = [11, 12, 13, 14, 15]
     y = [21, 22, 23, 24, 25]
-    aos = CoordinateSetSoA([x, y])
+    aos = CoordinateSetColumnWise([x, y])
     assert aos.promoted(1) == [12, 22, 0, nan]
 
     # Mask as Python tuple
