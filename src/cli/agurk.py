@@ -1,5 +1,5 @@
-from pyge import CoordinateSetLoL
-
+from pyge import CoordinateSetColumnWise
+from uuid import uuid4
 
 def agurk():
     print("AGURK!")
@@ -7,7 +7,7 @@ def agurk():
     y = [21, 22, 23, 24, 25]
     z = [31, 32, 33, 34, 35]
     t = [41, 42, 43, 44, 45]
-    lol = CoordinateSetLoL([x, y, z, t])
+    lol = CoordinateSetColumnWise([x, y, z, t])
 
     assert lol.len() == 5
     assert lol.dim() == 4

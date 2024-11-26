@@ -1,30 +1,60 @@
+from abc import ABC, abstractmethod
 from . import Documentation
 
 
-class Crs(Documentation):
+class Connection:
+    src_id: str
+    dst_id: str
+    definition: str
+    reversible: bool
+    variance: float
+    promotion: bool  # motion: pro de none passthru
+    mask: list[float]
+
+
+class CrsBase(ABC):
+    @abstractmethod
+    def len(self) -> int:
+        """Number of compounded CRSs"""
+        ...
+
+    @abstractmethod
+    def dim(self) -> int:
+        """Native dimension of coordinate tuples referred to this (potentially compound) CRS"""
+        ...
+
+    @abstractmethod
+    def parts(self) -> tuple:
+        """A tuple of the constituent CRSs"""
+        ...
+
+    def __len__(self) -> int:
+        return self.len()
+
+
+class Crs(CrsBase, Documentation):
     """Attempt at a potentially simplified CRS class"""
-
-    crs_id: str = None
-    units: tuple[str] = ()
-    attrs: dict[str, str] = {}
-    norvis: tuple[int] = (1, 2, 3, 4)
-    base_id: str = None
-    to_base_id: str = None
-    family: str = None
-
     def __init__(
         self,
         id: str,
-        base_id: (str | None) = None,
-        family: (str | None) = None,
+        parent_id: str | None = None,
+        parts: tuple[CrsBase] = (),
         units: tuple[str] = (),
+        norvis: tuple[int] = (1, 2, 3, 4),
         attrs: dict[str, str] = {},
     ):
-        self.crs_id = id
+        self.id = id
+        self.parent_id = parent_id
+        self.parts = parts
         self.units = units
+        self.norvis = norvis
         self.attrs = attrs
-        self.base_id = base_id
-        self.family = family
 
     def dim(self) -> int:
         return len(self.units)
+
+    def len(self) -> int:
+        return len(self.parts)
+
+    def parts(self) -> tuple[CrsBase]:
+        return self.parts

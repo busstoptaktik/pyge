@@ -2,8 +2,9 @@
 # in combination, so the splitting into sub-modules is just a matter of better
 # maintainability
 
-from pyge.coordinatetuple import *
-from pyge.coordinateset import *
-from pyge.documentation import *
-from pyge.crs import *
-from pyge.operation import *
+# from pyge.coordinatetuple import CoordinateTuple
+# from pyge.coordinateset import CoordinateSet, CoordinateSetColumnWise, CoordinateSetRowWise
+from .documentation import Documentation
+from .crs import CrsBase, Crs
+# from pyge.units import Unit, UNITS
+# from pyge.operation import Operation

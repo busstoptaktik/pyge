@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from math import nan, isnan
-from pyge.documentation import Documentation
+from .documentation import Documentation
 
 
 class CoordinateSet(ABC):
@@ -60,6 +60,11 @@ class CoordinateSet(ABC):
 
     def __len__(self) -> int:
         return self.len()
+
+
+#
+# Demo implementations
+#
 
 
 class CoordinateSetColumnWise(CoordinateSet, Documentation):
