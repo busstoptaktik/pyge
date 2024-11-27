@@ -1,4 +1,4 @@
-from pyge import Crs
+from pyge.crs import Crs
 
 
 def test_crs():

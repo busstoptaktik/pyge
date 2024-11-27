@@ -5,7 +5,7 @@ from enum import Enum
 from uuid import uuid4
 
 from .coordinateset import CoordinateSet
-from .operation  import Operation
+import pyge.operation as operation
 
 class OpHandle():
     def __init__(self):
@@ -50,12 +50,12 @@ class Context(ABC):
     """Modes of communication between the *Rust Geodesy* internals and the external
     world (i.e. resources like grids, transformation definitions, or ellipsoid parameters)."""
     def __init__(self):
-        self.ops: dict[OpHandle, Operation]
+        self.ops: dict[OpHandle, operation.Operation]
 
     def op(self, definition: str) -> OpHandle | None:
         """Instantiate the operation given by `definition`"""
         thehandle = OpHandle()
-        theop = Operation(str(thehandle), definition)
+        theop = operation.Operation(str(thehandle), definition)
         if theop is None:
             return None
         self.ops[thehandle] = theop

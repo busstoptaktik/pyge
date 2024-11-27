@@ -1,5 +1,5 @@
 from math import nan, isnan
-from pyge import Coor4D, Coor3D, Coor2D, Coor1D
+from pyge.coordinatetuple import Coor4D, Coor3D, Coor2D, Coor1D
 
 
 def test_coor4d():

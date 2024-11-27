@@ -1,5 +1,5 @@
-from . import Documentation
-from .context import Context
+from .documentation import Documentation
+import pyge.context as context
 from .coordinateset import CoordinateSet
 
 class Operation(Documentation):
@@ -77,18 +77,18 @@ class Operation(Documentation):
         return "inv" in self.args
 
 
-def fwd(op: Operation, ctx: Context, operands: CoordinateSet) -> int:
+def fwd(op: Operation, ctx: context.Context, operands: CoordinateSet) -> int:
     for i in range(len(operands)):
         operand = operands[i]
         operand[0] += 1
         operands[i] = operand
 
-def inv(op: Operation, ctx: Context, operands: CoordinateSet) -> int:
+def inv(op: Operation, ctx: context.Context, operands: CoordinateSet) -> int:
     for i in range(len(operands)):
         operand = operands[i]
         operand[0] += 1
         operands[i] = operand
 
 builtins = dict([
-    ("addone", fwd, inv)
+    ("addone", (fwd, inv))
 ])

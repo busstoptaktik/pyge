@@ -1,4 +1,4 @@
-from pyge import Documentation
+from pyge.documentation import Documentation
 from pytest import raises
 
 

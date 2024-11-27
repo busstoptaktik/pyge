@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from . import Documentation
+from .documentation import Documentation
 
 
 class Connection:

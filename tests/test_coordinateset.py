@@ -1,4 +1,4 @@
-from pyge import CoordinateSetColumnWise, CoordinateSetRowWise
+from pyge.coordinateset import CoordinateSetColumnWise, CoordinateSetRowWise
 from math import nan
 
 
