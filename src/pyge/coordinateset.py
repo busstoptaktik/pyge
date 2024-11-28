@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from math import nan, isnan
-from .registeritem import RegisterItem
 
 
 class CoordinateSet(ABC):
@@ -67,7 +66,7 @@ class CoordinateSet(ABC):
 #
 
 
-class CoordinateSetColumnWise(CoordinateSet, RegisterItem):
+class CoordinateSetColumnWise(CoordinateSet):
     """A column-store (struct-of-arrays) based CoordinateSet,
     where each coordinate dimension (i.e. x,y,z,t) resides in a separate list"""
 
@@ -89,7 +88,7 @@ class CoordinateSetColumnWise(CoordinateSet, RegisterItem):
             self.coords[i][idx] = float(value[i])
 
 
-class CoordinateSetRowWise(CoordinateSet, RegisterItem):
+class CoordinateSetRowWise(CoordinateSet):
     """A row-store (array-of-structs) based CoordinateSet, where the data is
     accessed as a list of coordinate tuples (encoded as lists)
     """

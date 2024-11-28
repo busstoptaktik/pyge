@@ -6,16 +6,6 @@ from typing import Callable
 class Operation(RegisterItem):
     """Attempt at a potentially simplified operation class"""
 
-    # Still demo time. Not ready for the units etc.
-    #
-    # left_units: tuple[str] = ()
-    # left_norvis: tuple[int] = (1, 2, 3, 4)
-    # left_id: str = None
-    #
-    # right_units: tuple[str] = ()
-    # right_norvis: tuple[int] = (1, 2, 3, 4)
-    # right_id: str = None
-
     def __init__(
         self,
         id: str,
@@ -97,6 +87,7 @@ class Operation(RegisterItem):
         self.inverse_function(self.args, operands)
 
 
+# Working towards OperatorMethods here
 
 def addone_forward_function(args: dict[str, str], ctx: context.Context, operands: CoordinateSet) -> int:
     for i in range(len(operands)):
@@ -107,5 +98,5 @@ def addone_forward_function(args: dict[str, str], ctx: context.Context, operands
 def addone_inverse_function(args: dict[str, str], ctx: context.Context, operands: CoordinateSet) -> int:
     for i in range(len(operands)):
         operand = operands[i]
-        operand[0] += 1
+        operand[0] -= 1
         operands[i] = operand

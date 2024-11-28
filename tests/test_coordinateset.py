@@ -48,10 +48,6 @@ def test_coordinatesetsoa():
     soa[1] = [nan]
     assert soa.promoted(1, (1, 2, 0, 2015)) == [1, 22, 0, 2015]
 
-    # Documentation
-    assert soa.item_name is None
-    assert soa.brief is None
-
 
 def test_coordinatesetaos():
     x1 = [11, 12, 13, 14]
@@ -97,7 +93,3 @@ def test_coordinatesetaos():
     # Mask as Python tuple
     aos[1] = [nan]
     assert aos.promoted(1, (1, 2, 0, 2015)) == [1, 22, 0, 2015]
-
-    # Documentation
-    assert aos.item_name is None
-    assert aos.brief is None
