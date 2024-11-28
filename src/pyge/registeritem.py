@@ -9,7 +9,7 @@ from abc import ABC
 # from the 2024 ISO-19111 systematic review
 
 
-class Documentation(ABC):
+class RegisterItem(ABC):
     """Blueprint for a bare minimum documentation metadata collection"""
 
     @property

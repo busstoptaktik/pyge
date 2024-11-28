@@ -35,12 +35,6 @@ def test_coor4d():
     cc = Coor4D(1, 2, 3, 4, 5, 6, 7, 8, 9)
     assert cc.as_list() == [1.0, 2.0, 3.0, 4.0]
 
-    # Inherited documentation elements
-    assert cc.authority == None
-    assert len(cc.crossref) == 0
-    print(f"item_name {cc.item_name} aha!")
-    print(f"item_name {cc.brief} aha!")
-
     # Overwritten element
     assert cc.brief == "Generic 4D coordinate tuple"
 

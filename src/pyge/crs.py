@@ -1,15 +1,5 @@
 from abc import ABC, abstractmethod
-from .documentation import Documentation
-
-
-class Connection:
-    src_id: str
-    dst_id: str
-    definition: str
-    reversible: bool
-    variance: float
-    promotion: bool  # motion: pro de none passthru
-    mask: list[float]
+from .registeritem import RegisterItem
 
 
 class CrsBase(ABC):
@@ -32,7 +22,7 @@ class CrsBase(ABC):
         return self.len()
 
 
-class Crs(CrsBase, Documentation):
+class Crs(CrsBase, RegisterItem):
     """Attempt at a potentially simplified CRS class"""
     def __init__(
         self,

@@ -1,8 +1,9 @@
-from .documentation import Documentation
+from .registeritem import RegisterItem
 import pyge.context as context
 from .coordinateset import CoordinateSet
+from typing import Callable
 
-class Operation(Documentation):
+class Operation(RegisterItem):
     """Attempt at a potentially simplified operation class"""
 
     # Still demo time. Not ready for the units etc.
@@ -15,25 +16,19 @@ class Operation(Documentation):
     # right_norvis: tuple[int] = (1, 2, 3, 4)
     # right_id: str = None
 
-    # Also, we need function objects here, for the init, forward
-    # and (if it exists) inverse operation method - but I need
-    # to look up the proper syntax for this...
-
-    # init
-    # fwd
-    # inv
-
     def __init__(
         self,
         id: str,
         definition: str,
+        ctx: context.Context
     ):
         self.id = id
         self.definition = definition
         self.steps: tuple[Operation] = ()
         self.args: dict[str, str] = {}
-        self.fwd = fwd
-        self.inv = inv
+        self.forward_function = None
+        self.inverse_function = None
+        self.ctx = ctx
 
         # We use the Rust Geodesy syntax, where steps are separated by the
         # vertical bar ("pipe") character
@@ -43,7 +38,7 @@ class Operation(Documentation):
         if len(definitions) > 1:
             self.args["_name"] = "pipeline"
             self.steps = tuple(
-                Operation("step", definition.strip())
+                Operation("step", definition.strip(), ctx)
                 for definition in definitions
                 if len(definition.strip()) > 0
             )
@@ -71,24 +66,46 @@ class Operation(Documentation):
             if len(argval) == 1:
                 argval.append("")
             self.args[argval[0]] = argval[1]
+
+        # TODO: Look up operator method fwd and inv by a call to ctx
+        # self.forward_function = fwd
+        # self.inverse_function = inv
+
         return
 
     def inverted(self):
         return "inv" in self.args
 
+    def omit_forward(self):
+        return "omit_fwd" in self.args
 
-def fwd(op: Operation, ctx: context.Context, operands: CoordinateSet) -> int:
+    def omit_inverse(self):
+        return "omit_inv" in self.args
+
+    def fwd(self, operands: CoordinateSet) -> int | None:
+        if self.omit_forward():
+            return None
+        if self.inverted:
+            return self.inverse_function(self.args, operands)
+        self.forward_function(self.args, operands)
+
+    def inv(self, operands: CoordinateSet):
+        if self.omit_inverse():
+            return None
+        if self.inverted:
+            return self.forward_function(self.args, operands)
+        self.inverse_function(self.args, operands)
+
+
+
+def addone_forward_function(args: dict[str, str], ctx: context.Context, operands: CoordinateSet) -> int:
     for i in range(len(operands)):
         operand = operands[i]
         operand[0] += 1
         operands[i] = operand
 
-def inv(op: Operation, ctx: context.Context, operands: CoordinateSet) -> int:
+def addone_inverse_function(args: dict[str, str], ctx: context.Context, operands: CoordinateSet) -> int:
     for i in range(len(operands)):
         operand = operands[i]
         operand[0] += 1
         operands[i] = operand
-
-builtins = dict([
-    ("addone", (fwd, inv))
-])

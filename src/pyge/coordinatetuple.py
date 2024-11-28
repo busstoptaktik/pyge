@@ -6,7 +6,6 @@ Coor1D, Coor2D, Coor3D, Coor4D
 
 from abc import ABC, abstractmethod
 from math import nan, isnan
-from pyge.documentation import Documentation
 
 
 class CoordinateTuple(ABC):
@@ -73,7 +72,7 @@ class CoordinateTuple(ABC):
         self.c = args[0 : self.dim()]
 
 
-class Coor4D(CoordinateTuple, Documentation):
+class Coor4D(CoordinateTuple):
     """4D coordinate tuple"""
 
     @property
@@ -98,7 +97,7 @@ class Coor4D(CoordinateTuple, Documentation):
         return self.c
 
 
-class Coor3D(CoordinateTuple, Documentation):
+class Coor3D(CoordinateTuple):
     """3D coordinate tuple"""
 
     @property
@@ -123,7 +122,7 @@ class Coor3D(CoordinateTuple, Documentation):
         return self.c
 
 
-class Coor2D(CoordinateTuple, Documentation):
+class Coor2D(CoordinateTuple):
     """4D coordinate tuple"""
 
     @property
@@ -148,7 +147,7 @@ class Coor2D(CoordinateTuple, Documentation):
         return self.c
 
 
-class Coor1D(CoordinateTuple, Documentation):
+class Coor1D(CoordinateTuple):
     """1D coordinate tuple"""
 
     @property

@@ -4,7 +4,7 @@
 
 # from pyge.coordinatetuple import CoordinateTuple
 # from pyge.coordinateset import CoordinateSet, CoordinateSetColumnWise, CoordinateSetRowWise
-#from .documentation import Documentation
-#from .crs import CrsBase, Crs
+# from .registeritem import RegisterItem
+# from .crs import CrsBase, Crs
 # from pyge.units import Unit, UNITS
 # from pyge.operation import Operation

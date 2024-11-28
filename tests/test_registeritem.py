@@ -1,8 +1,8 @@
-from pyge.documentation import Documentation
+from pyge.registeritem import RegisterItem
 from pytest import raises
 
 
-class Doctest(Documentation):
+class Doctest(RegisterItem):
     pass
 
 

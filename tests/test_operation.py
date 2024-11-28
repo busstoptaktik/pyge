@@ -1,9 +1,12 @@
 from pyge.operation import Operation
+from pyge.context import Context
 
 
 def test_operation():
+    ctx = Context()
+
     # Two proper steps and a lot of empty ones to be filtered out
-    op = Operation("1234", " ||||inv first a=1 b=2 | | | second c=3 d=4|| ")
+    op = Operation("1234", " ||||inv first a=1 b=2 | | | second c=3 d=4|| ", ctx)
 
     # Outer level
     assert op.args["_name"] == "pipeline"
@@ -29,11 +32,3 @@ def test_operation():
     assert op.steps[1].args["d"] == "4"
     assert "inv" not in op.steps[1].args
     assert "c" in op.steps[1].args
-
-
-# etrs89_xyz_to_geo = {
-#     "from": "etrs89_xyz",
-#     "to": "etrs89_geo",
-#     "op": "inv cart ellps=GRS80",
-#     "invertible": True,
-# }

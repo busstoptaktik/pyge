@@ -5,7 +5,6 @@ from enum import Enum
 from uuid import uuid4
 
 from .coordinateset import CoordinateSet
-import pyge.operation as operation
 
 class OpHandle():
     def __init__(self):
