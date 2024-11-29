@@ -1,12 +1,12 @@
 from .registeritem import RegisterItem
-import pyge.context as context
 from .coordinateset import CoordinateSet
+from .context import Context
 
 
 class Operation(RegisterItem):
     """Attempt at a potentially simplified operation class"""
 
-    def __init__(self, id: str, definition: str, ctx: context.Context):
+    def __init__(self, id: str, definition: str, ctx: Context):
         self.id = id
         self.definition = definition
         self.steps: tuple[Operation] = ()
@@ -19,7 +19,8 @@ class Operation(RegisterItem):
         # vertical bar ("pipe") character
         definitions = definition.split("|")
 
-        # For a pipeline of operations, fill the steps-list and be done with it
+        # For a pipeline of operations, fill the steps-list and be done with it:
+        # The hard work is carried out by the stepwise recursive calls
         if len(definitions) > 1:
             self.args["_name"] = "pipeline"
             self.steps = tuple(
@@ -33,15 +34,19 @@ class Operation(RegisterItem):
         theargs = definitions[0].split()
 
         # The potentially-prefix modifiers, and the operator method name,
-        # need special treatment: Modifiers are moved to the back, to
-        # ensure that the operator name is at the front
+        # need special treatment: All modifiers are moved to the back, to
+        # ensure that the operator name is at the front. Once that is done,
+        # the operator name foo is handled as if given as "_name=foo", in
+        # order to fit with the general style of the argument list
 
         modifiers = ["inv", "omit_fwd", "omit_inv"]
         for modifier in modifiers:
             if modifier in theargs:
                 del theargs[theargs.index(modifier)]
                 self.args[modifier] = ""
-        self.args["_name"] = theargs[0]
+
+        id = theargs[0]
+        self.args["_name"] = id
         del theargs[0]
 
         # Build the rest of the argument list
@@ -53,8 +58,11 @@ class Operation(RegisterItem):
             self.args[argval[0]] = argval[1]
 
         # TODO: Look up operator method fwd and inv by a call to ctx
-        # self.forward_function = fwd
-        # self.inverse_function = inv
+        method = ctx.method(id)
+        if method is None:
+            raise NameError(f"Unknown OperatorMethod '{id}' in '{definition}'")
+        self.forward_function = method.fwd
+        self.inverse_function = method.inv
 
         return
 
@@ -80,24 +88,3 @@ class Operation(RegisterItem):
         if self.inverted:
             return self.forward_function(self.args, operands)
         self.inverse_function(self.args, operands)
-
-
-# Working towards OperatorMethods here
-
-
-def addone_forward_function(
-    args: dict[str, str], ctx: context.Context, operands: CoordinateSet
-) -> int:
-    for i in range(len(operands)):
-        operand = operands[i]
-        operand[0] += 1
-        operands[i] = operand
-
-
-def addone_inverse_function(
-    args: dict[str, str], ctx: context.Context, operands: CoordinateSet
-) -> int:
-    for i in range(len(operands)):
-        operand = operands[i]
-        operand[0] -= 1
-        operands[i] = operand

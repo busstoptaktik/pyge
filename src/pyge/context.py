@@ -5,15 +5,21 @@ from enum import Enum
 from uuid import uuid4
 
 from .coordinateset import CoordinateSet
-import pyge.operation as operation
+from .registeritem import RegisterItem
+from .operator_method import OperatorMethod
 
 
 class OpHandle:
+    """A type-wrapped uuid for identifying an Operation instantiated via a Context"""
+
     def __init__(self):
         self.handle = uuid4()
 
 
-class Direction(Enum):
+class OpDirection(Enum):
+    """Designate whether an operation should be carried out
+    in the forward or inverse direction"""
+
     FWD = True
     INV = False
 
@@ -56,22 +62,16 @@ class Context(ABC):
     """Modes of communication between the *Rust Geodesy* internals and the external
     world (i.e. resources like grids, transformation definitions, or ellipsoid parameters)."""
 
-    def __init__(self):
-        self.ops: dict[OpHandle, operation.Operation]
+    def __init__(self): ...
+
+    def method(self, id) -> OperatorMethod | None: ...
 
     def op(self, definition: str) -> OpHandle | None:
         """Instantiate the operation given by `definition`"""
-        thehandle = OpHandle()
-        theop = operation.Operation(str(thehandle), definition)
-        if theop is None:
-            return None
-        self.ops[thehandle] = theop
-        return thehandle
+        ...
 
-    def apply(self, op: OpHandle, direction: Direction, operands: CoordinateSet) -> int:
+    def apply(
+        self, op: OpHandle, direction: OpDirection, operands: CoordinateSet
+    ) -> int:
         """Apply operation `op` to `operands` in direction Fwd or Inv"""
-        if op not in self.ops:
-            return 0
-        if direction == Direction.Fwd:
-            return self.ops[op].fwd(self, operands)
-        return self.ops[op].inv(self, operands)
+        ...
