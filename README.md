@@ -2,7 +2,7 @@
 
 ## What?
 
-A Python implementation of a minimum viable geodetic procesing data model. Somewhat inspired by the current version of ISO-19111 "Referencing by Coordinates", but focusing on the triplet of
+A Python implementation of a minimum viable data model for geodetic procesing. Somewhat inspired by the current version of ISO-19111 "Referencing by coordinates", but focusing on the triplet of
 
 - Reference frames, including their associated coordinate systems
 - Coordinate operations and
