@@ -4,11 +4,17 @@
 
 A Python implementation of a minimum viable geodetic procesing data model. Somewhat inspired by the current version of ISO-19111 "Referencing by Coordinates", but focusing on the triplet of
 
-- Reference frames
+- Reference frames, including their derived coordinate systems
 - Coordinate operations and
 - Coordinates
 
-Curently, PYGE is just a mock up of a data model, intended for ease-of-experimentation. PYGE does not implement any actual geodetic computational functionality, currently: It is merely a framework for demonstrating the data flow and the handling of parameters
+represented through the primary abstract classes
+
+- Crs
+- Operation
+- CoordinateSet
+
+Currently, PYGE is just a mock up of a data model, intended for ease-of-experimentation. PYGE does not implement any actual geodetic computational functionality, yet: It is merely a framework for demonstrating the data flow and the handling of parameters.
 
 PYGE builds on experience from [Rust Geodesy](https://github.com/busstoptaktik/geodesy)
 
