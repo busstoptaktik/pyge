@@ -2,6 +2,7 @@ from ..context import Context
 from ..coordinateset import CoordinateSet
 from ..operator_method import OperatorMethod
 
+
 def addone_forward_function(
     _args: dict[str, str], _ctx: Context, operands: CoordinateSet
 ) -> int:
@@ -18,7 +19,6 @@ def addone_inverse_function(
         operand = operands[i]
         operand[0] -= 1
         operands[i] = operand
-
 
 
 addone = OperatorMethod(

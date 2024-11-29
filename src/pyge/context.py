@@ -5,7 +5,6 @@ from enum import Enum
 from uuid import uuid4
 
 from .coordinateset import CoordinateSet
-from .registeritem import RegisterItem
 from .operator_method import OperatorMethod
 
 

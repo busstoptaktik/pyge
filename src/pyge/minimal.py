@@ -21,7 +21,7 @@ class MinimalContext(Context, RegisterItem):
 
     def builtins(self) -> tuple[str]:
         print(self.methods)
-        return tuple((val.id for val in self.methods.values() if val.builtin == True))
+        return tuple((val.id for val in self.methods.values() if val.builtin))
 
     def op(self, definition: str) -> OpHandle | None:
         """Instantiate the operation given by `definition`"""
