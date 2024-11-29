@@ -1,55 +1,9 @@
 from .context import Context, OpHandle, OpDirection
 from .operation import Operation
+from .operator_method import OperatorMethod
 from .coordinateset import CoordinateSet
 from .registeritem import RegisterItem
-
-# Working towards OperatorMethods here
-
-
-def addone_forward_function(
-    _args: dict[str, str], _ctx: Context, operands: CoordinateSet
-) -> int:
-    for i in range(len(operands)):
-        operand = operands[i]
-        operand[0] += 1
-        operands[i] = operand
-
-
-def addone_inverse_function(
-    _args: dict[str, str], _ctx: Context, operands: CoordinateSet
-) -> int:
-    for i in range(len(operands)):
-        operand = operands[i]
-        operand[0] -= 1
-        operands[i] = operand
-
-
-from dataclasses import dataclass
-from typing import Callable
-
-
-@dataclass(frozen=True, kw_only=True)
-class OperatorMethod(RegisterItem):
-    """For description and representation of the fwd/inv functionality of an operator method"""
-
-    id: str
-    description: str = ""
-    builtin: bool = False
-    fwd: Callable
-    inv: Callable | None = None
-
-
-addone = OperatorMethod(
-    id="addone", builtin=True, fwd=addone_forward_function, inv=addone_inverse_function
-)
-subone = OperatorMethod(
-    id="subone", builtin=True, inv=addone_forward_function, fwd=addone_inverse_function
-)
-
-builtin_operator_methods: dict[str, OperatorMethod] = {
-    "addone": addone,
-    "subone": subone,
-}
+from .builtin_operator_methods import builtin_operator_methods
 
 
 class MinimalContext(Context, RegisterItem):
