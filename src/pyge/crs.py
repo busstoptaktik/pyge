@@ -24,6 +24,7 @@ class CrsBase(ABC):
 
 class Crs(CrsBase, RegisterItem):
     """Attempt at a potentially simplified CRS class"""
+
     def __init__(
         self,
         id: str,

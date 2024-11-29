@@ -1,21 +1,16 @@
-from abc import ABC, abstractmethod
-from math import sqrt, hypot, atan2, sin, cos, radians, degrees, copysign, pi, nan
+from abc import ABC
 
 
 class Datum(ABC):
-    def __init__(self, name: str, units: tuple[str], attrs: dict[str, str] = {}):
-        ...
+    def __init__(self, name: str, units: tuple[str], attrs: dict[str, str] = {}): ...
 
-    def dim(self) -> int:
-        ...
+    def dim(self) -> int: ...
 
 
 class DatumEnsemble(ABC):
-    def __init__(self, name: str, units: tuple[str], attrs: dict[str, str] = {}):
-        ...
+    def __init__(self, name: str, units: tuple[str], attrs: dict[str, str] = {}): ...
 
-    def dim(self) -> int:
-        ...
+    def dim(self) -> int: ...
 
 
 class ReferenceFrame(Datum):

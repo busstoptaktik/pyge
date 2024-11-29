@@ -1,17 +1,12 @@
 from .registeritem import RegisterItem
 import pyge.context as context
 from .coordinateset import CoordinateSet
-from typing import Callable
+
 
 class Operation(RegisterItem):
     """Attempt at a potentially simplified operation class"""
 
-    def __init__(
-        self,
-        id: str,
-        definition: str,
-        ctx: context.Context
-    ):
+    def __init__(self, id: str, definition: str, ctx: context.Context):
         self.id = id
         self.definition = definition
         self.steps: tuple[Operation] = ()
@@ -89,13 +84,19 @@ class Operation(RegisterItem):
 
 # Working towards OperatorMethods here
 
-def addone_forward_function(args: dict[str, str], ctx: context.Context, operands: CoordinateSet) -> int:
+
+def addone_forward_function(
+    args: dict[str, str], ctx: context.Context, operands: CoordinateSet
+) -> int:
     for i in range(len(operands)):
         operand = operands[i]
         operand[0] += 1
         operands[i] = operand
 
-def addone_inverse_function(args: dict[str, str], ctx: context.Context, operands: CoordinateSet) -> int:
+
+def addone_inverse_function(
+    args: dict[str, str], ctx: context.Context, operands: CoordinateSet
+) -> int:
     for i in range(len(operands)):
         operand = operands[i]
         operand[0] -= 1

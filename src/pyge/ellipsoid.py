@@ -1,4 +1,4 @@
-from math import sqrt, hypot, atan2, sin, cos, radians, degrees, copysign, pi
+from math import sqrt, hypot, atan2, sin, cos, copysign, pi
 
 
 class Ellipsoid:

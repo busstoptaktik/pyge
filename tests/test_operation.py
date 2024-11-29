@@ -16,7 +16,7 @@ def test_operation():
 
     # First step
     assert op.steps[0].id == "step"
-    assert op.steps[0].inverted() == True
+    assert op.steps[0].inverted() is True
     assert op.steps[0].args["_name"] == "first"
     assert op.steps[0].definition == "inv first a=1 b=2"
     assert op.steps[0].args["a"] == "1"
@@ -25,7 +25,7 @@ def test_operation():
 
     # Second step
     assert op.steps[1].id == "step"
-    assert op.steps[1].inverted() == False
+    assert op.steps[1].inverted() is False
     assert op.steps[1].args["_name"] == "second"
     assert op.steps[1].definition == "second c=3 d=4"
     assert op.steps[1].args["c"] == "3"

@@ -41,7 +41,7 @@ class CoordinateSet(ABC):
         result = [*self.get(idx), *(mask[self.dim() :])]
 
         # Then update NaNs in the original coordinate tuple, with mask content
-        for (index, value) in enumerate(mask):
+        for index, value in enumerate(mask):
             if isnan(result[index]):
                 result[index] = float(value)
 

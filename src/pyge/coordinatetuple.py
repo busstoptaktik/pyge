@@ -15,8 +15,7 @@ class CoordinateTuple(ABC):
         return len(self.as_list())
 
     @abstractmethod
-    def as_list(self) -> list[float]:
-        ...
+    def as_list(self) -> list[float]: ...
 
     def as_promoted_list(
         self, mask: list[float] | tuple[float] = [nan, nan, 0, nan]
@@ -32,7 +31,7 @@ class CoordinateTuple(ABC):
         result = [*self.as_list(), *(mask[self.dim() :])]
 
         # Then update NaNs in the original coordinate tuple, with mask content
-        for (index, value) in enumerate(mask):
+        for index, value in enumerate(mask):
             if isnan(result[index]):
                 result[index] = float(value)
 
