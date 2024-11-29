@@ -1,4 +1,4 @@
-from pyge import CoordinateSetColumnWise
+from pyge.coordinateset import CoordinateSetColumnWise
 
 
 def agurk():
