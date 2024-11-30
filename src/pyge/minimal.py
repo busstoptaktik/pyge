@@ -2,11 +2,10 @@ from .context import Context, OpHandle, OpDirection
 from .operation import Operation
 from .operator_method import OperatorMethod
 from .coordinateset import CoordinateSet
-from .registeritem import RegisterItem
 from .builtin_operator_methods import builtin_operator_methods
 
 
-class MinimalContext(Context, RegisterItem):
+class MinimalContext(Context):
     """Modes of communication between the PyGe internals and the external
     world (i.e. resources like grids, transformation definitions, or ellipsoid parameters)."""
 

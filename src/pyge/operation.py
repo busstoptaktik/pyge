@@ -66,25 +66,28 @@ class Operation(RegisterItem):
 
         return
 
+    @property
     def inverted(self):
         return "inv" in self.args
 
+    @property
     def omit_forward(self):
         return "omit_fwd" in self.args
 
+    @property
     def omit_inverse(self):
         return "omit_inv" in self.args
 
-    def fwd(self, operands: CoordinateSet) -> int | None:
-        if self.omit_forward():
+    def fwd(self, ctx: Context, operands: CoordinateSet) -> int | None:
+        if self.omit_forward:
             return None
         if self.inverted:
-            return self.inverse_function(self.args, operands)
-        self.forward_function(self.args, operands)
+            return self.inverse_function(self.args, ctx, operands)
+        self.forward_function(self.args, ctx, operands)
 
-    def inv(self, operands: CoordinateSet):
-        if self.omit_inverse():
+    def inv(self, ctx: Context, operands: CoordinateSet):
+        if self.omit_inverse:
             return None
         if self.inverted:
-            return self.forward_function(self.args, operands)
-        self.inverse_function(self.args, operands)
+            return self.forward_function(self.args, ctx, operands)
+        self.inverse_function(self.args, ctx, operands)
