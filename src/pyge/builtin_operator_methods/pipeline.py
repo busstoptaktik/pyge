@@ -7,9 +7,6 @@ from ..operation import Operation
 def pipeline_forward_function(
     op: Operation, ctx: Context, operands: CoordinateSet
 ) -> int:
-    print(operands[0])
-    print(operands[1])
-    print(len(operands))
     n = len(operands)
     for step in op.steps:
         if step.omit_forward:
