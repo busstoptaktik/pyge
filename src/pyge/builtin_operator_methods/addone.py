@@ -6,25 +6,29 @@ from ..operator_method import OperatorMethod
 def addone_forward_function(
     _args: dict[str, str], _ctx: Context, operands: CoordinateSet
 ) -> int:
-    for i in range(len(operands)):
+    n = len(operands)
+    for i in range(n):
         operand = operands[i]
         operand[0] += 1
         operands[i] = operand
+    return n
 
 
 def addone_inverse_function(
     _args: dict[str, str], _ctx: Context, operands: CoordinateSet
 ) -> int:
-    for i in range(len(operands)):
+    n = len(operands)
+    for i in range(n):
         operand = operands[i]
         operand[0] -= 1
         operands[i] = operand
+    return n
 
 
 addone = OperatorMethod(
-    id="addone", builtin=True, fwd=addone_forward_function, inv=addone_inverse_function
+    id="addone", fwd=addone_forward_function, inv=addone_inverse_function, builtin=True
 )
 
 subone = OperatorMethod(
-    id="subone", builtin=True, inv=addone_forward_function, fwd=addone_inverse_function
+    id="subone", inv=addone_forward_function, fwd=addone_inverse_function, builtin=True
 )

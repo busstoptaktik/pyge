@@ -22,7 +22,12 @@ class Operation(RegisterItem):
         # For a pipeline of operations, fill the steps-list and be done with it:
         # The hard work is carried out by the stepwise recursive calls
         if len(definitions) > 1:
+            method = ctx.method("pipeline")
+            if method is None:
+                raise NameError(f"Unknown OperatorMethod 'pipeline' in '{definition}'")
             self.args["_name"] = "pipeline"
+            self.forward_function = method.fwd
+            self.inverse_function = method.inv
             self.steps = tuple(
                 Operation("step", definition.strip(), ctx)
                 for definition in definitions
@@ -82,12 +87,12 @@ class Operation(RegisterItem):
         if self.omit_forward:
             return None
         if self.inverted:
-            return self.inverse_function(self.args, ctx, operands)
-        self.forward_function(self.args, ctx, operands)
+            return self.inverse_function(self, ctx, operands)
+        return self.forward_function(self, ctx, operands)
 
     def inv(self, ctx: Context, operands: CoordinateSet):
         if self.omit_inverse:
             return None
         if self.inverted:
-            return self.forward_function(self.args, ctx, operands)
-        self.inverse_function(self.args, ctx, operands)
+            return self.forward_function(self, ctx, operands)
+        return self.inverse_function(self, ctx, operands)

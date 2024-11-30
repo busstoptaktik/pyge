@@ -28,25 +28,72 @@ def test_minimal_context():
     assert coord[1][0] == 5
 
 
+def test_register_method():
+    global addtwo
+    ctx = MinimalContext()
+
+    ctx.register_method(addtwo)
+    assert ctx.op("addtwo") is not None
+
+    ctx.register_method(subtwo)
+    assert ctx.op("subtwo") is not None
+
+    # `addtwo` can be instantiated?
+    addtwo = ctx.op("addtwo")
+    assert addtwo is not None
+
+    # `addtwo` behaves as expected, forward and inverse?
+    coord = CoordinateSetRowWise([[1, 2, 3, 4], [5, 6, 7, 8]])
+    ctx.apply(addtwo, OpDirection.FWD, coord)
+    assert coord[0][0] == 3
+    assert coord[1][0] == 7
+    ctx.apply(addtwo, OpDirection.INV, coord)
+    assert coord[0][0] == 1
+    assert coord[1][0] == 5
+
+    # Pipelines can be instantiated?
+    # A convoluted way of adding one...
+    addone_c = ctx.op("addtwo | subone")
+    assert addone_c is not None
+
+    print(f"{ctx.ops[addone_c].forward_function}")
+
+    # The pipeline behaves as expected, forward and inverse?
+    coord = CoordinateSetRowWise([[1, 2, 3, 4], [5, 6, 7, 8]])
+    ctx.apply(addone_c, OpDirection.FWD, coord)
+    assert coord[0][0] == 2
+    assert coord[1][0] == 6
+    ctx.apply(addone_c, OpDirection.INV, coord)
+    assert coord[0][0] == 1
+    assert coord[1][0] == 5
+
+    with raises(NameError):
+        ctx.op("non_existing_method")
+
+
 # A user defined OperationMethod, for testing the register_method functionality
 
 
 def addtwo_forward_function(
     _args: dict[str, str], _ctx: Context, operands: CoordinateSet
 ) -> int:
-    for i in range(len(operands)):
+    n = len(operands)
+    for i in range(n):
         operand = operands[i]
         operand[0] += 2
         operands[i] = operand
+    return n
 
 
 def addtwo_inverse_function(
     _args: dict[str, str], _ctx: Context, operands: CoordinateSet
 ) -> int:
-    for i in range(len(operands)):
+    n = len(operands)
+    for i in range(n):
         operand = operands[i]
         operand[0] -= 2
         operands[i] = operand
+    return n
 
 
 addtwo = OperatorMethod(
@@ -56,16 +103,3 @@ addtwo = OperatorMethod(
 subtwo = OperatorMethod(
     id="subtwo", inv=addtwo_forward_function, fwd=addtwo_inverse_function
 )
-
-
-def test_register_method():
-    ctx = MinimalContext()
-
-    ctx.register_method(addtwo)
-    assert ctx.op("addtwo") is not None
-
-    ctx.register_method(subtwo)
-    assert ctx.op("subtwo") is not None
-
-    with raises(NameError):
-        ctx.op("non_existing_method")

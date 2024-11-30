@@ -9,6 +9,6 @@ class OperatorMethod(RegisterItem):
 
     id: str
     description: str = ""
-    builtin: bool = False
     fwd: Callable
     inv: Callable | None = None
+    builtin: bool = False
