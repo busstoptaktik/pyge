@@ -22,7 +22,7 @@ class Operation(RegisterItem):
         # For a pipeline of operations, fill the steps-list and be done with it:
         # The hard work is carried out by the stepwise recursive calls
         if len(definitions) > 1:
-            method = ctx.method("pipeline")
+            method = ctx.operator_method("pipeline")
             if method is None:
                 raise NameError(f"Unknown OperatorMethod 'pipeline' in '{definition}'")
             self.args["_name"] = "pipeline"
@@ -63,7 +63,7 @@ class Operation(RegisterItem):
             self.args[argval[0]] = argval[1]
 
         # TODO: Look up operator method fwd and inv by a call to ctx
-        method = ctx.method(id)
+        method = ctx.operator_method(id)
         if method is None:
             raise NameError(f"Unknown OperatorMethod '{id}' in '{definition}'")
         self.forward_function = method.fwd

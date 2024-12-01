@@ -1,3 +1,5 @@
+"""The pipeline operator method"""
+
 from ..context import Context
 from ..coordinateset import CoordinateSet
 from ..operator_method import OperatorMethod

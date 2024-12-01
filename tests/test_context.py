@@ -15,7 +15,7 @@ def test_minimal_context():
     # `addone` is registered as a builtin?
     assert "addone" in ctx.builtins()
 
-    # `addone` can be instantiated
+    # `addone` can be instantiated?
     addone = ctx.op("addone")
     assert addone is not None
 
@@ -33,10 +33,10 @@ def test_register_method():
     global addtwo
     ctx = MinimalContext()
 
-    ctx.register_method(addtwo)
+    ctx.register_operator_method(addtwo)
     assert ctx.op("addtwo") is not None
 
-    ctx.register_method(subtwo)
+    ctx.register_operator_method(subtwo)
     assert ctx.op("subtwo") is not None
 
     # `addtwo` can be instantiated?

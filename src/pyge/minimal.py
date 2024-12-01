@@ -6,19 +6,22 @@ from .builtin_operator_methods import builtin_operator_methods
 
 
 class MinimalContext(Context):
-    """Modes of communication between the PyGe internals and the external
-    world (i.e. resources like grids, transformation definitions, or ellipsoid parameters)."""
+    """Provide the user facing API, and the OS-facing integration
+
+    Modes of communication between the PyGe internals and the external
+    world (i.e. resources like grids, transformation definitions,
+    or ellipsoid parameters)."""
 
     def __init__(self):
         self.ops: dict[OpHandle, Operation] = {}
         self.methods: dict[str, OperatorMethod] = dict(builtin_operator_methods)
 
-    def register_method(self, user_defined_method: OperatorMethod):
-        """Add a user defined method to the gamut of the context"""
+    def register_operator_method(self, user_defined_method: OperatorMethod):
+        """Add a user defined method to the gamut of built-ins"""
         self.methods[user_defined_method.id] = user_defined_method
 
-    def method(self, id) -> OperatorMethod | None:
-        """The OperatorMethod representation of the operator method named 'id'"""
+    def operator_method(self, id) -> OperatorMethod | None:
+        """The OperatorMethod representation of the operator method named `id`"""
         if id in self.methods:
             return self.methods[id]
         return None

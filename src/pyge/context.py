@@ -7,6 +7,8 @@ from uuid import uuid4
 from dataclasses import dataclass, field
 from enum import Enum
 
+# TODO: Unit handling, https://pint.readthedocs.io/en/stable/index.html
+
 
 @dataclass(frozen=True)
 class OpHandle:
@@ -24,19 +26,22 @@ class OpDirection(Enum):
 
 
 class Context(ABC):
-    """Modes of communication between the PyGe internals and the external
-    world (i.e. resources like grids, transformation definitions, or ellipsoid parameters)."""
+    """Provide the user facing API, and the OS-facing integration
+
+    Modes of communication between the PyGe internals and the external
+    world (i.e. resources like grids, transformation definitions,
+    or ellipsoid parameters)."""
 
     @abstractmethod
     def __init__(self): ...
 
     @abstractmethod
-    def register_method(self, user_defined_method: OperatorMethod):
-        """Add a user defined method to the gamut of the context"""
+    def register_operator_method(self, user_defined_method: OperatorMethod):
+        """Add a user defined method to the gamut of built-ins"""
         ...
 
     @abstractmethod
-    def method(self, id: str) -> OperatorMethod | None:
+    def operator_method(self, id: str) -> OperatorMethod | None:
         """The OperatorMethod representation of the operator method named `id`"""
         ...
 
