@@ -1,4 +1,4 @@
-from pyge.operation import Operation
+from pyge.operator import Operator
 from pytest import raises
 from pyge.minimal import MinimalContext
 
@@ -8,10 +8,10 @@ def test_operation():
 
     # Trying to access a non-existing OperationMethod raises NameError
     with raises(NameError):
-        Operation("1234", "week_with_five_tuesdays", ctx)
+        Operator("1234", "week_with_five_tuesdays", ctx)
 
     # Two proper steps and a lot of empty ones to be filtered out
-    op = Operation("1234", " ||||inv addone a=1 b=2 | | | subone c=3 d=4|| ", ctx)
+    op = Operator("1234", " ||||inv addone a=1 b=2 | | | subone c=3 d=4|| ", ctx)
 
     # Outer level
     assert op.args["_name"] == "pipeline"

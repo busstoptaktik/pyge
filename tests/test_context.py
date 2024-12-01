@@ -1,7 +1,7 @@
 from pyge.context import Context, OpHandle, OpDirection
 from pyge.coordinateset import CoordinateSet, CoordinateSetRowWise
 from pyge.operator_method import OperatorMethod
-from pyge.operation import Operation
+from pyge.operator import Operator
 from pyge.minimal import MinimalContext
 from pytest import raises
 
@@ -76,7 +76,7 @@ def test_register_method():
 
 
 def addtwo_forward_function(
-    _op: Operation, _ctx: Context, operands: CoordinateSet
+    _op: Operator, _ctx: Context, operands: CoordinateSet
 ) -> int:
     n = len(operands)
     for i in range(n):
@@ -87,7 +87,7 @@ def addtwo_forward_function(
 
 
 def addtwo_inverse_function(
-    _op: Operation, _ctx: Context, operands: CoordinateSet
+    _op: Operator, _ctx: Context, operands: CoordinateSet
 ) -> int:
     n = len(operands)
     for i in range(n):

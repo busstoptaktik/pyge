@@ -1,5 +1,5 @@
 from .context import Context, OpHandle, OpDirection
-from .operation import Operation
+from .operator import Operator
 from .operator_method import OperatorMethod
 from .coordinateset import CoordinateSet
 from .builtin_operator_methods import builtin_operator_methods
@@ -13,7 +13,7 @@ class MinimalContext(Context):
     or ellipsoid parameters)."""
 
     def __init__(self):
-        self.ops: dict[OpHandle, Operation] = {}
+        self.ops: dict[OpHandle, Operator] = {}
         self.methods: dict[str, OperatorMethod] = dict(builtin_operator_methods)
 
     def register_operator_method(self, user_defined_method: OperatorMethod):
@@ -31,9 +31,9 @@ class MinimalContext(Context):
         return tuple((val.id for val in self.methods.values() if val.builtin))
 
     def op(self, definition: str) -> OpHandle | None:
-        """Instantiate the operation given by `definition`"""
+        """Instantiate the operator given by `definition`"""
         thehandle = OpHandle()
-        theop = Operation(str(thehandle), definition, self)
+        theop = Operator(str(thehandle), definition, self)
         if theop is None:
             return None
         self.ops[thehandle] = theop
@@ -42,7 +42,7 @@ class MinimalContext(Context):
     def apply(
         self, op: OpHandle, direction: OpDirection, operands: CoordinateSet
     ) -> int:
-        """Apply operation `op` to `operands` in direction Fwd or Inv"""
+        """Apply operator `op` to `operands` in direction Fwd or Inv"""
         if op not in self.ops:
             return 0
         if direction == OpDirection.FWD:

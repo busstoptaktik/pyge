@@ -7,4 +7,4 @@
 # from .registeritem import RegisterItem
 # from .crs import CrsBase, Crs
 # from pyge.units import Unit, UNITS
-# from pyge.operation import Operation
+# from pyge.operator import Operator

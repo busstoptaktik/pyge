@@ -3,11 +3,11 @@
 from ..context import Context
 from ..coordinateset import CoordinateSet
 from ..operator_method import OperatorMethod
-from ..operation import Operation
+from ..operator import Operator
 
 
 def pipeline_forward_function(
-    op: Operation, ctx: Context, operands: CoordinateSet
+    op: Operator, ctx: Context, operands: CoordinateSet
 ) -> int:
     n = len(operands)
     for step in op.steps:
@@ -19,7 +19,7 @@ def pipeline_forward_function(
 
 
 def pipeline_inverse_function(
-    op: Operation, ctx: Context, operands: CoordinateSet
+    op: Operator, ctx: Context, operands: CoordinateSet
 ) -> int:
     n = len(operands)
     for step in reversed(op.steps):

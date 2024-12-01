@@ -12,13 +12,13 @@ from enum import Enum
 
 @dataclass(frozen=True)
 class OpHandle:
-    """A type-wrapped uuid for identifying an Operation instantiated via a Context"""
+    """A type-wrapped uuid for identifying an Operator instantiated via a Context"""
 
     handle: uuid4 = field(default_factory=uuid4)
 
 
 class OpDirection(Enum):
-    """Designate whether an operation should be carried out
+    """Designate whether an operator should be carried out
     in the forward or inverse direction"""
 
     FWD = True
@@ -52,12 +52,12 @@ class Context(ABC):
 
     @abstractmethod
     def op(self, definition: str) -> OpHandle | None:
-        """Instantiate the operation given by `definition`"""
+        """Instantiate the operator given by `definition`"""
         ...
 
     @abstractmethod
     def apply(
         self, op: OpHandle, direction: OpDirection, operands: CoordinateSet
     ) -> int:
-        """Apply operation `op` to `operands` in direction `FWD` or `INV`"""
+        """Apply operator `op` to `operands` in direction `FWD` or `INV`"""
         ...

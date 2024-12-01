@@ -3,11 +3,11 @@
 from ..context import Context
 from ..coordinateset import CoordinateSet
 from ..operator_method import OperatorMethod
-from ..operation import Operation
+from ..operator import Operator
 
 
 def addone_forward_function(
-    _op: Operation, _ctx: Context, operands: CoordinateSet
+    _op: Operator, _ctx: Context, operands: CoordinateSet
 ) -> int:
     n = len(operands)
     for i in range(n):
@@ -18,7 +18,7 @@ def addone_forward_function(
 
 
 def addone_inverse_function(
-    _op: Operation, _ctx: Context, operands: CoordinateSet
+    _op: Operator, _ctx: Context, operands: CoordinateSet
 ) -> int:
     n = len(operands)
     for i in range(n):
