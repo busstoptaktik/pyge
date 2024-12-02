@@ -1,3 +1,5 @@
+from math import isnan
+
 from .registeritem import RegisterItem
 from .coordinateset import CoordinateSet
 from .context import Context
@@ -114,6 +116,31 @@ class Operator(RegisterItem):
     @property
     def omit_inverse(self) -> bool:
         return "omit_inv" in self.args
+
+    def param_as_floats(
+        self, param: str, mask: list[float] | tuple[float] = ()
+    ) -> list[float]:
+        """Convert the value of parameter `param` to a list of floats
+
+        The mask provides defaults and extension values to pad the value to the expected dimension.
+        """
+
+        if param in self.args:
+            values = [float(v) for v in self.args[param].split(",")]
+        else:
+            values = []
+
+        # If too short, extend the values using the tail of the mask
+        n = len(values)
+        if n < len(mask):
+            values.extend(mask[n:])
+
+        # Then update NaNs in the original coordinate tuple, with mask content
+        for index, mask_value in enumerate(mask):
+            if isnan(values[index]):
+                values[index] = float(mask_value)
+
+        return values
 
     def fwd(self, ctx: Context, operands: CoordinateSet) -> int:
         if self.omit_forward:
