@@ -27,6 +27,7 @@ classifiers = [
 plonk = "cli:plonk"
 plink = "cli:plink"
 agurk = "cli:agurk"
+ellps = "cli:ellps"
 
 # https://stackoverflow.com/a/49033954/618276
 # https://docs.pytest.org/en/stable/getting-started.html
