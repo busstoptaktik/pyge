@@ -41,7 +41,7 @@ class Operator(RegisterItem):
     def __init__(self, definition: str, ctx: Context):
         self.definition = definition
         self.steps: tuple[Operator] = ()
-        self.args: dict[str, str] = {}
+        self.parameters: dict[str, str] = {}
         self.forward_function = None
         self.inverse_function = None
         self.ctx = ctx
@@ -61,7 +61,7 @@ class Operator(RegisterItem):
             method = ctx.operator_method("pipeline")
             if method is None:
                 raise NameError(f"Unknown OperatorMethod 'pipeline' in '{definition}'")
-            self.args["_name"] = "pipeline"
+            self.parameters["_name"] = "pipeline"
             self.forward_function = method.fwd
             self.inverse_function = method.inv
             self.steps = tuple(Operator(d, ctx) for d in definitions)
@@ -79,10 +79,10 @@ class Operator(RegisterItem):
         for modifier in modifiers:
             if modifier in theargs:
                 del theargs[theargs.index(modifier)]
-                self.args[modifier] = ""
+                self.parameters[modifier] = ""
 
         id = theargs[0]
-        self.args["_name"] = id
+        self.parameters["_name"] = id
         del theargs[0]
 
         # Build the rest of the argument list
@@ -91,7 +91,7 @@ class Operator(RegisterItem):
             # Flags get an empty value
             if len(argval) == 1:
                 argval.append("")
-            self.args[argval[0]] = argval[1]
+            self.parameters[argval[0]] = argval[1]
 
         method = ctx.operator_method(id)
         if method is None:
@@ -103,21 +103,21 @@ class Operator(RegisterItem):
 
     @property
     def is_noop(self) -> bool:
-        return self.args["_name"] == "pipeline" and len(self.steps) == 0
+        return self.parameters["_name"] == "pipeline" and len(self.steps) == 0
 
     @property
     def inverted(self) -> bool:
-        return "inv" in self.args
+        return "inv" in self.parameters
 
     @property
     def omit_forward(self) -> bool:
-        return "omit_fwd" in self.args
+        return "omit_fwd" in self.parameters
 
     @property
     def omit_inverse(self) -> bool:
-        return "omit_inv" in self.args
+        return "omit_inv" in self.parameters
 
-    def param_as_floats(
+    def parameter_as_floats(
         self, param: str, mask: list[float] | tuple[float] = ()
     ) -> list[float]:
         """Convert the value of parameter `param` to a list of floats
@@ -125,8 +125,8 @@ class Operator(RegisterItem):
         The mask provides defaults and extension values to pad the value to the expected dimension.
         """
 
-        if param in self.args:
-            values = [float(v) for v in self.args[param].split(",")]
+        if param in self.parameters:
+            values = [float(v) for v in self.parameters[param].split(",")]
         else:
             values = []
 

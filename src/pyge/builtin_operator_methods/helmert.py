@@ -7,7 +7,7 @@ from ..operator import Operator
 
 
 def helmert_forward(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
-    xyz = op.param_as_floats("translation", (0, 0, 0))
+    xyz = op.parameter_as_floats("translation", (0, 0, 0))
     len_xyz = len(xyz)
 
     for i, operand in enumerate(operands):
@@ -16,7 +16,7 @@ def helmert_forward(op: Operator, _ctx: Context, operands: CoordinateSet) -> int
 
 
 def helmert_inverse(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
-    xyz = op.param_as_floats("translation", (0, 0, 0))
+    xyz = op.parameter_as_floats("translation", (0, 0, 0))
     len_xyz = len(xyz)
 
     for i, operand in enumerate(operands):

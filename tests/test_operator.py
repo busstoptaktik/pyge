@@ -24,42 +24,42 @@ def test_operator_instantiation():
     # A plain non-pipeline operator
     op = Operator("inv helmert a=1 b=2,3,4", ctx)
     assert op.inverted
-    assert op.args["_name"] == "helmert"
+    assert op.parameters["_name"] == "helmert"
     assert op.definition == "inv helmert a=1 b=2,3,4"
-    assert op.args["a"] == "1"
-    assert op.args["b"] == "2,3,4"
-    assert op.args["inv"] == ""
+    assert op.parameters["a"] == "1"
+    assert op.parameters["b"] == "2,3,4"
+    assert op.parameters["inv"] == ""
 
     # Convert a parameter to a list of floats
-    assert op.param_as_floats("a") == [1.0]
-    assert op.param_as_floats("a", (nan, 2, 3, nan)) == [1, 2, 3, nan]
-    assert 3 == len(op.param_as_floats("b"))
-    assert 0 == len(op.param_as_floats("no_such_param"))
+    assert op.parameter_as_floats("a") == [1.0]
+    assert op.parameter_as_floats("a", (nan, 2, 3, nan)) == [1, 2, 3, nan]
+    assert 3 == len(op.parameter_as_floats("b"))
+    assert 0 == len(op.parameter_as_floats("no_such_param"))
 
     # Two proper steps and a lot of empty ones to be filtered out
     op = Operator(" ||||inv helmert a=1 b=2 | | | subone c=3 d=4|| ", ctx)
 
     # Outer level
-    assert op.args["_name"] == "pipeline"
+    assert op.parameters["_name"] == "pipeline"
     # Empty steps are filtered out
     assert len(op.steps) == 2
 
     # First step
     assert op.steps[0].inverted
-    assert op.steps[0].args["_name"] == "helmert"
+    assert op.steps[0].parameters["_name"] == "helmert"
     assert op.steps[0].definition == "inv helmert a=1 b=2"
-    assert op.steps[0].args["a"] == "1"
-    assert op.steps[0].args["b"] == "2"
-    assert op.steps[0].args["inv"] == ""
+    assert op.steps[0].parameters["a"] == "1"
+    assert op.steps[0].parameters["b"] == "2"
+    assert op.steps[0].parameters["inv"] == ""
 
     # Second step
     assert op.steps[1].inverted is False
-    assert op.steps[1].args["_name"] == "subone"
+    assert op.steps[1].parameters["_name"] == "subone"
     assert op.steps[1].definition == "subone c=3 d=4"
-    assert op.steps[1].args["c"] == "3"
-    assert op.steps[1].args["d"] == "4"
-    assert "inv" not in op.steps[1].args
-    assert "c" in op.steps[1].args
+    assert op.steps[1].parameters["c"] == "3"
+    assert op.steps[1].parameters["d"] == "4"
+    assert "inv" not in op.steps[1].parameters
+    assert "c" in op.steps[1].parameters
 
 
 def test_helmert():
