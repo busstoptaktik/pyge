@@ -19,9 +19,12 @@ class Operator(RegisterItem):
 
     Hence, we have this collection of disentangled concepts:
 
-    - **OperatorMethod**: The mathematical expression(s) behind an operator
+    - **OperatorMethod**: The mathematical functionality of an operator
     - **Operator**: An instantiation of an **OperatorMethod** and its associated
       defining constants
+    - Operator definition: A textual representation of an Operator
+      (e.g. `utm zone=32 ellps=GRS80`), which can be used to instantiate
+      the corresponding Operator
     - Operand: The **CoordinateSet** operated on by an **Operator**
     - Operation: The act of applying the **Operator** to the operand
 
@@ -33,8 +36,7 @@ class Operator(RegisterItem):
     represent operators as instantiations of the class **Operator**.
     """
 
-    def __init__(self, id: str, definition: str, ctx: Context):
-        self.id = id
+    def __init__(self, definition: str, ctx: Context):
         self.definition = definition
         self.steps: tuple[Operator] = ()
         self.args: dict[str, str] = {}
@@ -43,34 +45,34 @@ class Operator(RegisterItem):
         self.ctx = ctx
 
         # We use the Rust Geodesy syntax, where steps are separated by the
-        # vertical bar ("pipe") character
-        definitions = definition.split("|")
+        # vertical bar ("pipe") character, and we strip out empty steps.
+        # This may lead to empty definitions, which is OK: An operator consists
+        # of zero or more steps. An empty definition is represented as a pipeline
+        # with zero steps. Hence the `len(definitions != 1)`, rather than
+        # `len(definitions > 1)` in the condition for detecting pipelines below
+        definitions = [
+            stripped for d in definition.split("|") if len(stripped := d.strip()) > 0
+        ]
 
-        # For a pipeline of operators, fill the steps-list and be done with it:
-        # The hard work is carried out by the stepwise recursive calls
-        if len(definitions) > 1:
+        # For a pipeline of operators, recursively call the constructor for each step
+        if len(definitions) != 1:
             method = ctx.operator_method("pipeline")
             if method is None:
                 raise NameError(f"Unknown OperatorMethod 'pipeline' in '{definition}'")
             self.args["_name"] = "pipeline"
             self.forward_function = method.fwd
             self.inverse_function = method.inv
-            self.steps = tuple(
-                Operator("step", definition.strip(), ctx)
-                for definition in definitions
-                if len(definition.strip()) > 0
-            )
+            self.steps = tuple(Operator(d, ctx) for d in definitions)
             return
 
-        # Otherwise parse the definition into arguments and build the object
+        # Not a pipeline, so parse the definition into arguments and build the object
         theargs = definitions[0].split()
 
         # The potentially-prefix modifiers, and the operator method name,
         # need special treatment: All modifiers are moved to the back, to
         # ensure that the operator name is at the front. Once that is done,
         # the operator name foo is handled as if given as "_name=foo", in
-        # order to fit with the general style of the argument list
-
+        # alignment with the general style of the argument list
         modifiers = ["inv", "omit_fwd", "omit_inv"]
         for modifier in modifiers:
             if modifier in theargs:
@@ -98,27 +100,31 @@ class Operator(RegisterItem):
         return
 
     @property
-    def inverted(self):
+    def is_noop(self) -> bool:
+        return self.args["_name"] == "pipeline" and len(self.steps) == 0
+
+    @property
+    def inverted(self) -> bool:
         return "inv" in self.args
 
     @property
-    def omit_forward(self):
+    def omit_forward(self) -> bool:
         return "omit_fwd" in self.args
 
     @property
-    def omit_inverse(self):
+    def omit_inverse(self) -> bool:
         return "omit_inv" in self.args
 
-    def fwd(self, ctx: Context, operands: CoordinateSet) -> int | None:
+    def fwd(self, ctx: Context, operands: CoordinateSet) -> int:
         if self.omit_forward:
-            return None
+            return len(operands)
         if self.inverted:
             return self.inverse_function(self, ctx, operands)
         return self.forward_function(self, ctx, operands)
 
-    def inv(self, ctx: Context, operands: CoordinateSet):
+    def inv(self, ctx: Context, operands: CoordinateSet) -> int:
         if self.omit_inverse:
-            return None
+            return len(operands)
         if self.inverted:
             return self.forward_function(self, ctx, operands)
         return self.inverse_function(self, ctx, operands)

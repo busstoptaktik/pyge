@@ -6,11 +6,13 @@ from pyge.minimal import MinimalContext
 from pytest import raises
 
 
-def test_minimal_context():
-    ctx = MinimalContext()
-
+def test_op_handle():
     # `OpHandle` initializes an instance variable, not a class variable?
     assert OpHandle() != OpHandle()
+
+
+def test_minimal_context():
+    ctx = MinimalContext()
 
     # `addone` is registered as a builtin?
     assert "addone" in ctx.builtins()
@@ -25,6 +27,31 @@ def test_minimal_context():
     assert coord[0][0] == 2
     assert coord[1][0] == 6
     ctx.apply(addone, OpDirection.INV, coord)
+    assert coord[0][0] == 1
+    assert coord[1][0] == 5
+
+    # `addone` can be instantiated in inverse mode?
+    addone = ctx.op("inv addone")
+    assert addone is not None
+
+    # The inverted `addone` behaves as expected, forward and inverse?
+    coord = CoordinateSetRowWise([[1, 2, 3, 4], [5, 6, 7, 8]])
+    ctx.apply(addone, OpDirection.FWD, coord)
+    assert coord[0][0] == 0
+    assert coord[1][0] == 4
+    ctx.apply(addone, OpDirection.INV, coord)
+    assert coord[0][0] == 1
+    assert coord[1][0] == 5
+
+    # A no-operator can be instantiated?
+    no_op = ctx.op("")
+    assert no_op is not None
+    # The no-operator behaves as expected, forward and inverse?
+    coord = CoordinateSetRowWise([[1, 2, 3, 4], [5, 6, 7, 8]])
+    assert 2 == ctx.apply(no_op, OpDirection.FWD, coord)
+    assert coord[0][0] == 1
+    assert coord[1][0] == 5
+    assert 2 == ctx.apply(no_op, OpDirection.INV, coord)
     assert coord[0][0] == 1
     assert coord[1][0] == 5
 

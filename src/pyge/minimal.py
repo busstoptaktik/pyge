@@ -33,7 +33,7 @@ class MinimalContext(Context):
     def op(self, definition: str) -> OpHandle | None:
         """Instantiate the operator given by `definition`"""
         thehandle = OpHandle()
-        theop = Operator(str(thehandle), definition, self)
+        theop = Operator(definition, self)
         if theop is None:
             return None
         self.ops[thehandle] = theop

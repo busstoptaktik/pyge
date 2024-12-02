@@ -10,8 +10,10 @@ def plink():
     plonk()
     agurk()
 
+
 def ellps():
     from pyge.ellipsoid import Ellipsoid
+
     e = Ellipsoid.named("GRS80")
     print(f"Eccentricity [ppm]: {e.eccentricity()*1e6}")
     print(f"Eccentricity squared [ppm]: {e.eccentricity_squared()*1e6}")
