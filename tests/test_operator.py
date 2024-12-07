@@ -22,10 +22,11 @@ def test_operator_instantiation():
     assert op.is_noop
 
     # A plain non-pipeline operator
-    op = Operator("inv helmert a=1 b=2,3,4", ctx)
+    op = Operator(" | inv helmert a  =  1 b=2,3,4 | ", ctx)
     assert op.inverted
+    assert op.definition == " | inv helmert a  =  1 b=2,3,4 | "
+    assert op.normalized_definition == "inv helmert a=1 b=2,3,4"
     assert op.parameters["_name"] == "helmert"
-    assert op.definition == "inv helmert a=1 b=2,3,4"
     assert op.parameters["a"] == "1"
     assert op.parameters["b"] == "2,3,4"
     assert op.parameters["inv"] == ""
@@ -37,7 +38,7 @@ def test_operator_instantiation():
     assert 0 == len(op.parameter_as_floats("no_such_param"))
 
     # Two proper steps and a lot of empty ones to be filtered out
-    op = Operator(" ||||inv helmert a=1 b=2 | | | subone c=3 d=4|| ", ctx)
+    op = Operator(" #\n||||inv\n# foo\n helmert a=1 b=2 | | | subone c=3 d=4|| ", ctx)
 
     # Outer level
     assert op.parameters["_name"] == "pipeline"

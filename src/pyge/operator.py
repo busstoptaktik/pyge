@@ -46,15 +46,33 @@ class Operator(RegisterItem):
         self.inverse_function = None
         self.ctx = ctx
 
+        # Remove end-of-line comments
+        # definition = definition.strip().split("#")
+
         # We use the Rust Geodesy syntax, where steps are separated by the
         # vertical bar ("pipe") character, and we strip out empty steps.
         # This may lead to empty definitions, which is OK: An operator consists
         # of zero or more steps. An empty definition is represented as a pipeline
         # with zero steps. Hence the `len(definitions != 1)`, rather than
         # `len(definitions > 1)` in the condition for detecting pipelines below
+
+        # Remove all comments - block and inline
+        lines = definition.replace("\r", "\n").split("\n")
+        trimmed = ""
+        for line in lines:
+            trimmed += " "
+            trimmed += (list(line.strip().split("#")) + [""])[0]
+        # Collapse repeated whitespace
+        trimmed = " ".join(trimmed.split())
+        # Trim all whitespace around the syntactical elements {'=', ',', '.', ':'}
+        # Whitespace around '|' is handled in the next step, definitions = [...]
+        for splitter in "|=,.:":
+            trimmed = splitter.join((d.strip() for d in trimmed.split(splitter)))
+        # Split into an array of non-empty steps
         definitions = [
-            stripped for d in definition.split("|") if len(stripped := d.strip()) > 0
+            stripped for d in trimmed.split("|") if len(stripped := d.strip()) > 0
         ]
+        self.normalized_definition = "|".join(definitions)
 
         # For a pipeline of operators, recursively call the constructor for each step
         if len(definitions) != 1:
