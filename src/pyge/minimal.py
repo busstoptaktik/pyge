@@ -26,9 +26,9 @@ class MinimalContext(Context):
             return self.methods[id]
         return None
 
-    def builtins(self) -> tuple[str]:
+    def builtins(self) -> set[str]:
         """The names of all built in operator methods"""
-        return tuple((val.id for val in self.methods.values() if val.builtin))
+        return set(builtin_operator_methods.keys())
 
     def op(self, definition: str) -> OpHandle | None:
         """Instantiate the operator given by `definition`"""

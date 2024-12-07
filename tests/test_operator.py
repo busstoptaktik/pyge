@@ -22,9 +22,9 @@ def test_operator_instantiation():
     assert op.is_noop
 
     # A plain non-pipeline operator
-    op = Operator(" | inv helmert a  =  1 b=2,3,4 d c=,, | ", ctx)
+    op = Operator(" | inv helmert a  =  1 b=2,3, 4 d c=,, | ", ctx)
     assert op.inverted
-    assert op.definition == " | inv helmert a  =  1 b=2,3,4 d c=,, | "
+    assert op.definition == " | inv helmert a  =  1 b=2,3, 4 d c=,, | "
     assert op.normalized_definition == "inv helmert a=1 b=2,3,4 d c=,,"
     assert op.parameters["_name"] == "helmert"
     assert op.parameters["a"] == "1"

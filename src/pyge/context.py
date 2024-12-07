@@ -46,7 +46,7 @@ class Context(ABC):
         ...
 
     @abstractmethod
-    def builtins(self) -> tuple[str]:
+    def builtins(self) -> set[str]:
         """The names of all built in operator methods"""
         ...
 
