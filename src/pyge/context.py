@@ -5,7 +5,7 @@ from .operator_method import OperatorMethod
 
 from uuid import uuid4
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import Enum, auto
 
 # TODO: Unit handling, https://pint.readthedocs.io/en/stable/index.html
 
@@ -21,8 +21,8 @@ class OpDirection(Enum):
     """Designate whether an operator should be carried out
     in the forward or inverse direction"""
 
-    FWD = True
-    INV = False
+    FWD = auto()
+    INV = auto()
 
 
 class Context(ABC):
