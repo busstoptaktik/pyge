@@ -160,6 +160,31 @@ class Operator(RegisterItem):
 
         return values
 
+    def parameter_as_strs(
+        self, param: str, mask: list[str] | tuple[str] = ()
+    ) -> list[float]:
+        """Convert the value of parameter `param` to a list of strings
+
+        The mask provides defaults and extension values to pad the value to the expected dimension.
+        """
+
+        if param in self.parameters:
+            values = [v for v in self.parameters[param].split(",")]
+        else:
+            values = []
+
+        # If too short, extend the values using the tail of the mask
+        n = len(values)
+        if n < len(mask):
+            values.extend(mask[n:])
+
+        # Then update empty strings in the original coordinate tuple, with mask content
+        for index, mask_value in enumerate(mask):
+            if values[index] == "":
+                values[index] = mask_value
+
+        return values
+
     def fwd(self, ctx: Context, operands: CoordinateSet) -> int:
         if self.omit_forward:
             return len(operands)

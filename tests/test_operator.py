@@ -22,20 +22,36 @@ def test_operator_instantiation():
     assert op.is_noop
 
     # A plain non-pipeline operator
-    op = Operator(" | inv helmert a  =  1 b=2,3,4 | ", ctx)
+    op = Operator(" | inv helmert a  =  1 b=2,3,4 d c=,, | ", ctx)
     assert op.inverted
-    assert op.definition == " | inv helmert a  =  1 b=2,3,4 | "
-    assert op.normalized_definition == "inv helmert a=1 b=2,3,4"
+    assert op.definition == " | inv helmert a  =  1 b=2,3,4 d c=,, | "
+    assert op.normalized_definition == "inv helmert a=1 b=2,3,4 d c=,,"
     assert op.parameters["_name"] == "helmert"
     assert op.parameters["a"] == "1"
     assert op.parameters["b"] == "2,3,4"
     assert op.parameters["inv"] == ""
 
-    # Convert a parameter to a list of floats
+    # Convert a parameter value to a list of floats
     assert op.parameter_as_floats("a") == [1.0]
     assert op.parameter_as_floats("a", (nan, 2, 3, nan)) == [1, 2, 3, nan]
     assert 3 == len(op.parameter_as_floats("b"))
     assert 0 == len(op.parameter_as_floats("no_such_param"))
+
+    # Convert a parameter value to a list of strs
+
+    assert op.parameter_as_strs("a") == ["1"]
+    assert op.parameter_as_strs("a", ("", "33", "32", "")) == ["1", "33", "32", ""]
+    assert op.parameter_as_strs("c", ("", "", "")) == ["", "", ""]
+    assert op.parameter_as_strs("c", ("", "2", "3")) == ["", "2", "3"]
+
+    # The difference between a specified flag and a non-existing (which could be a un-specified flag)
+    assert op.parameter_as_strs("d") == [""]
+    assert op.parameter_as_strs("no_such_param") == []
+
+    assert 3 == len(op.parameter_as_strs("b"))
+    assert 4 == len(op.parameter_as_strs("no_such_param", ("", "33", "32", "")))
+    assert 3 == len(op.parameter_as_strs("c"))
+    assert 1 == len(op.parameter_as_strs("d"))
 
     # Two proper steps and a lot of empty ones to be filtered out
     op = Operator(" #\n||||inv\n# foo\n helmert a=1 b=2 | | | subone c=3 d=4|| ", ctx)
