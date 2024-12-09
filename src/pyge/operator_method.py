@@ -11,4 +11,7 @@ class OperatorMethod(RegisterItem):
     description: str = ""
     fwd: Callable
     inv: Callable | None = None
-    builtin: bool = False
+
+    @property
+    def invertible(self) -> bool:
+        return self.inv is not None

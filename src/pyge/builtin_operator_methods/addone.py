@@ -29,9 +29,9 @@ def addone_inverse_function(
 
 
 addone = OperatorMethod(
-    id="addone", fwd=addone_forward_function, inv=addone_inverse_function, builtin=True
+    id="addone", fwd=addone_forward_function, inv=addone_inverse_function
 )
 
 subone = OperatorMethod(
-    id="subone", inv=addone_forward_function, fwd=addone_inverse_function, builtin=True
+    id="subone", inv=addone_forward_function, fwd=addone_inverse_function
 )

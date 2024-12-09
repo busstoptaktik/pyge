@@ -23,7 +23,7 @@ class CoordinateSet(ABC):
         ...
 
     @abstractmethod
-    def set(self, idx: int, value: list[float]):
+    def set(self, idx: int, value: list[float]|tuple[float]):
         """Overwrite the `idx`th coordinate tuple"""
         ...
 
@@ -53,7 +53,7 @@ class CoordinateSet(ABC):
     def __getitem__(self, idx: int) -> list[float]:
         return self.get(idx)
 
-    def __setitem__(self, idx: int, value: list[float]):
+    def __setitem__(self, idx: int, value: list[float]|tuple[float]):
         self.set(idx, value)
         return
 

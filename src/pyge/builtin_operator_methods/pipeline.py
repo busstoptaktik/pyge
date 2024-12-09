@@ -34,5 +34,4 @@ pipeline = OperatorMethod(
     id="pipeline",
     fwd=pipeline_forward_function,
     inv=pipeline_inverse_function,
-    builtin=True,
 )
