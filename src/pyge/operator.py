@@ -1,12 +1,12 @@
-from math import isnan
-
 from .registeritem import RegisterItem
 from .coordinateset import CoordinateSet
 from .context import Context
+from .operator_method import OperatorMethod
 
 
 class Operator(RegisterItem):
-    """Attempt at a potentially simplified operator/operation class
+    """
+    Attempt at a potentially simplified operator/operation class
 
     The term *operation* in the *Coordinate Operations* package of the current
     ISO-19111 and OGC Topic 2 standards, entangles two related concepts:
@@ -62,17 +62,20 @@ class Operator(RegisterItem):
         for line in lines:
             trimmed += " "
             trimmed += (list(line.strip().split("#")) + [""])[0]
+
         # Collapse repeated whitespace
         trimmed = " ".join(trimmed.split())
+
         # Trim all whitespace around the syntactical elements {'=', ',', '.', ':'}
         # Whitespace around '|' is handled in the next step, definitions = [...]
         for splitter in "|=,.:":
             trimmed = splitter.join((d.strip() for d in trimmed.split(splitter)))
+
         # Split into an array of non-empty steps
         definitions = [
             stripped for d in trimmed.split("|") if len(stripped := d.strip()) > 0
         ]
-        self.normalized_definition = "|".join(definitions)
+        self.normalized_definition = " | ".join(definitions)
 
         # For a pipeline of operators, recursively call the constructor for each step
         if len(definitions) != 1:
@@ -93,7 +96,7 @@ class Operator(RegisterItem):
         # ensure that the operator name is at the front. Once that is done,
         # the operator name foo is handled as if given as "_name=foo", in
         # alignment with the general style of the argument list
-        modifiers = ["inv", "omit_fwd", "omit_inv"]
+        modifiers = "inv", "omit_fwd", "omit_inv"
         for modifier in modifiers:
             if modifier in theargs:
                 del theargs[theargs.index(modifier)]
@@ -114,8 +117,9 @@ class Operator(RegisterItem):
         method = ctx.operator_method(id)
         if method is None:
             raise NameError(f"Unknown OperatorMethod '{id}'  in '{definition}'")
-        self.forward_function = method.fwd
-        self.inverse_function = method.inv
+        self.forward_function = method.forward()
+        self.inverse_function = method.inverse()
+        self.prepared = method.prepare(self.parameters)
 
         return
 
@@ -137,53 +141,23 @@ class Operator(RegisterItem):
 
     def parameter_as_floats(
         self, param: str, mask: list[float] | tuple[float] = ()
-    ) -> list[float]:
-        """Convert the value of parameter `param` to a list of floats
+    ) -> tuple[float]:
+        """
+        Convert the value of parameter `param` to a list of floats
 
         The mask provides defaults and extension values to pad the value to the expected dimension.
         """
-
-        if param in self.parameters:
-            values = [float(v) for v in self.parameters[param].split(",")]
-        else:
-            values = []
-
-        # If too short, extend the values using the tail of the mask
-        n = len(values)
-        if n < len(mask):
-            values.extend(mask[n:])
-
-        # Then update NaNs in the original coordinate tuple, with mask content
-        for index, mask_value in enumerate(mask):
-            if isnan(values[index]):
-                values[index] = float(mask_value)
-
-        return values
+        return OperatorMethod.parameter_as_floats(self.parameters, param, mask)
 
     def parameter_as_strs(
         self, param: str, mask: list[str] | tuple[str] = ()
-    ) -> list[float]:
-        """Convert the value of parameter `param` to a list of strings
+    ) -> tuple[str]:
+        """
+        Convert the value of parameter `param` to a list of floats
 
         The mask provides defaults and extension values to pad the value to the expected dimension.
         """
-
-        if param in self.parameters:
-            values = [v for v in self.parameters[param].split(",")]
-        else:
-            values = []
-
-        # If too short, extend the values using the tail of the mask
-        n = len(values)
-        if n < len(mask):
-            values.extend(mask[n:])
-
-        # Then update empty strings in the original coordinate tuple, with mask content
-        for index, mask_value in enumerate(mask):
-            if values[index] == "":
-                values[index] = mask_value
-
-        return values
+        return OperatorMethod.parameter_as_strs(self.parameters, param, mask)
 
     def fwd(self, ctx: Context, operands: CoordinateSet) -> int:
         if self.omit_forward:

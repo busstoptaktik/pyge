@@ -6,11 +6,13 @@ from .builtin_operator_methods import builtin_operator_methods
 
 
 class MinimalContext(Context):
-    """Provide the user facing API, and the OS-facing integration
+    """
+    Provide the user facing API, and the OS-facing integration
 
     Modes of communication between the PyGe internals and the external
     world (i.e. resources like grids, transformation definitions,
-    or ellipsoid parameters)."""
+    or ellipsoid parameters).
+    """
 
     def __init__(self):
         self.ops: dict[OpHandle, Operator] = {}

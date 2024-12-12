@@ -3,7 +3,8 @@ from math import nan, isnan
 
 
 class CoordinateSet(ABC):
-    """Blueprint for the bare minimum functionality for a practically useful
+    """
+    Blueprint for the bare minimum functionality for a practically useful
     implementation of the ISO19111 CoordinateSet interface
     """
 
@@ -23,7 +24,7 @@ class CoordinateSet(ABC):
         ...
 
     @abstractmethod
-    def set(self, idx: int, value: list[float]|tuple[float]):
+    def set(self, idx: int, value: list[float] | tuple[float]):
         """Overwrite the `idx`th coordinate tuple"""
         ...
 
@@ -53,7 +54,7 @@ class CoordinateSet(ABC):
     def __getitem__(self, idx: int) -> list[float]:
         return self.get(idx)
 
-    def __setitem__(self, idx: int, value: list[float]|tuple[float]):
+    def __setitem__(self, idx: int, value: list[float] | tuple[float]):
         self.set(idx, value)
         return
 

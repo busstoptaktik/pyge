@@ -24,9 +24,15 @@ class OpDirection(Enum):
     FWD = auto()
     INV = auto()
 
+    def invert(direction):
+        if direction == OpDirection.FWD:
+            return OpDirection.INV
+        return OpDirection.FWD
+
 
 class Context(ABC):
-    """Provide the user facing API, and the OS-facing integration
+    """
+    Provide the user facing API, and the OS-facing integration
 
     Modes of communication between the PyGe internals and the external
     world (i.e. resources like grids, transformation definitions,

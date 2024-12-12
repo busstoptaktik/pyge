@@ -15,6 +15,23 @@ def test_operator_instantiation():
     with raises(NameError):
         Operator("week_with_five_tuesdays", ctx)
 
+    # The helmert operator method exists, but we provide some suspicious parameter values
+    op = Operator("helmert xyz= 1, two, 3", ctx)
+
+    with raises(ValueError):
+        op.parameter_as_floats("xyz")
+    # OK to access them as strings, though
+    assert op.parameter_as_strs("xyz") == ("1", "two", "3")
+
+    # The translation parameter is interpreted by the helmert preparation method
+    op = Operator("helmert translation= 1, 2", ctx)
+    assert op.prepared["translation"] == (1, 2, 0)
+    # So it will fail at construction time if we provide non-numeric values
+    with raises(ValueError):
+        Operator("helmert translation= 1, two, 3", ctx)
+    with raises(KeyError):
+        op.prepared["cheese"] == (1, 2, 0)
+
     # Effectively empty pipelines
     op = Operator("", ctx)
     assert op.is_noop
@@ -32,21 +49,21 @@ def test_operator_instantiation():
     assert op.parameters["inv"] == ""
 
     # Convert a parameter value to a list of floats
-    assert op.parameter_as_floats("a") == [1.0]
-    assert op.parameter_as_floats("a", (nan, 2, 3, nan)) == [1, 2, 3, nan]
+    assert op.parameter_as_floats("a") == (1.0,)
+    assert op.parameter_as_floats("a", (nan, 2, 3, nan)) == (1, 2, 3, nan)
     assert 3 == len(op.parameter_as_floats("b"))
     assert 0 == len(op.parameter_as_floats("no_such_param"))
 
     # Convert a parameter value to a list of strs
 
-    assert op.parameter_as_strs("a") == ["1"]
-    assert op.parameter_as_strs("a", ("", "33", "32", "")) == ["1", "33", "32", ""]
-    assert op.parameter_as_strs("c", ("", "", "")) == ["", "", ""]
-    assert op.parameter_as_strs("c", ("", "2", "3")) == ["", "2", "3"]
+    assert op.parameter_as_strs("a") == ("1",)
+    assert op.parameter_as_strs("a", ("", "33", "32", "")) == ("1", "33", "32", "")
+    assert op.parameter_as_strs("c", ("", "", "")) == ("", "", "")
+    assert op.parameter_as_strs("c", ("", "2", "3")) == ("", "2", "3")
 
     # The difference between a specified flag and a non-existing (which could be a un-specified flag)
-    assert op.parameter_as_strs("d") == [""]
-    assert op.parameter_as_strs("no_such_param") == []
+    assert op.parameter_as_strs("d") == ("",)
+    assert op.parameter_as_strs("no_such_param") == ()
 
     assert 3 == len(op.parameter_as_strs("b"))
     assert 4 == len(op.parameter_as_strs("no_such_param", ("", "33", "32", "")))

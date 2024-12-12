@@ -8,8 +8,8 @@ class Ellipsoid:
     Based on the ellipsoid trait from Rust Geodesy
     """
 
-    a: float = 6378137.0
-    f: float = 1.0 / 298.2572221008827
+    # a: float = 6378137.0
+    # f: float = 1.0 / 298.2572221008827
 
     def __init__(self, a: float, rf: float):
         self.a = a
@@ -24,7 +24,7 @@ class Ellipsoid:
             case "intl":
                 return Ellipsoid(6378388.0, 297.0)
             case _:
-                raise Exception("Unknown ellipsoid", name)
+                raise Exception(f"Unknown ellipsoid '{name}'")
 
     def eccentricity_squared(self):
         """The squared eccentricity *e² = (a² - b²) / a²*"""

@@ -24,8 +24,16 @@ def helmert_inverse(op: Operator, _ctx: Context, operands: CoordinateSet) -> int
     return len(operands)
 
 
+def helmert_prepare(parameters: dict[str, str]) -> dict[str, (float)]:
+    xyz = OperatorMethod.parameter_as_floats(parameters, "translation", (0, 0, 0))
+    prepared = {}
+    prepared["translation"] = xyz
+    return prepared
+
+
 helmert = OperatorMethod(
     id="helmert",
     fwd=helmert_forward,
     inv=helmert_inverse,
+    prep=helmert_prepare,
 )

@@ -11,6 +11,18 @@ def test_op_handle():
     assert OpHandle() != OpHandle()
 
 
+def test_op_direction():
+    fwd = OpDirection.FWD
+    inv = OpDirection.INV
+    # Check that inversion works correctly
+    assert fwd.invert() == inv
+    assert inv.invert() == fwd
+    # Show that invert() returns a new value, it does not alter
+    # the internals of an OpDirection (which is an Enum)
+    assert fwd == OpDirection.FWD
+    assert inv == OpDirection.INV
+
+
 def test_minimal_context():
     ctx = MinimalContext()
 
