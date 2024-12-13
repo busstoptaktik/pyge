@@ -96,6 +96,71 @@ def test_operator_instantiation():
     assert "c" in op.steps[1].parameters
 
 
+def test_tmerc():
+    ctx = MinimalContext()
+
+    # tmerc ellipsoid handling
+    with raises(NameError):
+        Operator("tmerc ellps=a, f", ctx)
+    with raises(NameError):
+        Operator("tmerc ellps=1, 2, 3", ctx)
+    with raises(NameError):
+        ctx.op("tmerc ellps=1, 2, 3")
+
+    op = Operator("tmerc ellps=1, 2", ctx)
+    assert op.prepared["ellps"] == (1.0, 0.5)
+
+    # Other tmerc parameters
+    with raises(ValueError):
+        Operator("tmerc x_0=cheese", ctx)
+    op = Operator("tmerc x_0=1", ctx)
+    assert op.prepared["offsets"] == (1, 0, 0, 0)
+
+    geo = CoordinateSetRowWise(
+        [[55.0, 12.0], [-55.0, 12.0], [55.0, -6.0], [-55.0, -6.0]]
+    )
+
+    projected = CoordinateSetRowWise(
+        [
+            [6_098_907.825_005_012, 691_875.632_139_661],
+            [-6_098_907.825_005_012, 691_875.632_139_661],
+            [6_198_246.671_090_279, -455_673.814_189_040],
+            [-6_198_246.671_090_279, -455_673.814_189_040],
+        ]
+    )
+
+    op = ctx.op("geo | tmerc x_0=500000 lon_0=9 k_0=0.9996 ellps=GRS80 | ne")
+    ctx.apply(op, OpDirection.FWD, geo)
+    for i in range(len(projected)):
+        # Since we use the Bowring/Lee formulation, we do not exactly replicate the
+        # PROJ results, using the Poder/Engsager/Krüger formulary: Out at 6W, i.e.
+        # 15 degrees from the central meridian, we deviate by 3 mm from PROJ. Closer
+        # to the central meridian, the difference is immaterial
+        assert abs(geo[i][0] - projected[i][0]) < 0.005
+
+    # We hve overwritten geo, so we make a new copy
+    geo = CoordinateSetRowWise(
+        [[55.0, 12.0], [-55.0, 12.0], [55.0, -6.0], [-55.0, -6.0]]
+    )
+
+    ctx.apply(op, OpDirection.INV, projected)
+    for i in range(len(projected)):
+        # Since we use the Bowring/Lee formulation, we do not exactly replicate the
+        # PROJ results, using the Poder/Engsager/Krüger formulary: Out at 6W, i.e.
+        # 15 degrees from the central meridian, we deviate by a few decimeters from
+        # PROJ. Closer to the central meridian, the difference is immaterial
+        assert abs(geo[i][0] - projected[i][0]) < 5e-6
+
+
+def test_utm():
+    ctx = MinimalContext()
+    op = Operator("utm zone=32", ctx)
+    assert op.prepared["x_0"] == 500_000.0
+    assert op.prepared["k_0"] == 0.9996
+    assert op.prepared["lat_0"] == 0
+    assert op.prepared["lon_0"] == 9.0
+
+
 def test_helmert():
     ctx = MinimalContext()
 

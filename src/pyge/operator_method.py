@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Any
 from .registeritem import RegisterItem
 from math import isnan
 
@@ -24,7 +24,7 @@ class OperatorMethod(RegisterItem):
     def inverse(self) -> Callable | None:
         return self.inv
 
-    def prepare(self, parameters: dict[str, str]) -> dict[str, (float)]:
+    def prepare(self, parameters: dict[str, str]) -> dict[str, Any]:
         if self.prep is not None:
             return self.prep(parameters)
         return {}
@@ -46,7 +46,7 @@ class OperatorMethod(RegisterItem):
         # If too short, extend the values using the tail of the mask
         n = len(values)
         if n < len(mask):
-            values.extend(mask[n:])
+            values.extend([float(v) for v in mask[n:]])
 
         # Then update NaNs in the original coordinate tuple, with mask content
         for index, mask_value in enumerate(mask):

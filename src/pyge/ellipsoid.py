@@ -23,8 +23,16 @@ class Ellipsoid:
                 return Ellipsoid(6378137.0, 298.257223563)
             case "intl":
                 return Ellipsoid(6378388.0, 297.0)
-            case _:
-                raise Exception(f"Unknown ellipsoid '{name}'")
+
+        # Not a known ellipsoid - try to interpret is as an (a,1/f) pair
+        af = name.split(",")
+        if len(af) != 2:
+            raise NameError(f"Unknown ellipsoid '{name}'")
+        try:
+            a, f = float(af[0]), float(af[1])
+        except ValueError:
+            raise NameError(f"Unknown ellipsoid '{name}'")
+        return Ellipsoid(a, f)
 
     def eccentricity_squared(self):
         """The squared eccentricity *e² = (a² - b²) / a²*"""
@@ -77,7 +85,74 @@ class Ellipsoid:
 
     def aspect_ratio(self) -> float:
         """The aspect ratio, *a / b  =  1 / ( 1 - f )  =  1 / sqrt(1 - e²)*"""
-        1.0 / (1.0 - self.flattening())
+        return 1.0 / (1.0 - self.flattening())
+
+    def rectifying_radius_bowring(self) -> float:
+        """
+        The rectifying radius, *A*, following Bowring (1983).
+        An utterly elegant way of writing out the series truncated after the *n⁴* term.
+        In general, however, prefer using the *n⁸* version, in Rust Geodesy implemented as
+        [rectifying_radius](Meridians::rectifying_radius), based on
+        [Karney (2010)](crate::Bibliography::Kar10) eq. (29), as elaborated in
+        [Deakin et al (2012)](crate::Bibliography::Dea12) eq. (41)
+        """
+        # A is the rectifying radius - truncated after the n⁴ term
+        n = self.third_flattening()
+        m = 1.0 + n * n / 8.0
+        return self.a * m * m / (1.0 + n)
+
+    def meridian_latitude_to_distance(self, latitude: float) -> float:
+        """
+        The distance, *M*, along a meridian from the equator to the given latitude.
+
+        A special case of a geodesic length. This implementation follows the remarkably
+        simple algorithm by Bowring (1983). See also
+        https://en.wikipedia.org/wiki/Transverse_Mercator:_Bowring_series.
+        Deakin et al (2012) provide a higher order (*n⁸*) implementation.
+        """
+        n = self.third_flattening()
+
+        # A = self.rectifying_radius_bowring()
+        # Inlining since we already have n
+        m = 1.0 + n * n / 8.0
+        A = self.a * m * m / (1.0 + n)
+
+        B = 9.0 * (1.0 - 3.0 * n * n / 8.0)
+        s = sin(2.0 * latitude)
+        c = cos(2.0 * latitude)
+        x = 1.0 + 13.0 / 12.0 * n * c
+        y = 0.0 + 13.0 / 12.0 * n * s
+        r = hypot(x, y)
+        v = atan2(y, x)
+        theta = latitude - B * pow(r, -2.0 / 13.0) * sin(2.0 * v / 13.0)
+        return A * theta
+
+    def meridian_distance_to_latitude(self, distance_from_equator: float) -> float:
+        # Compute the latitude of a point, given *M*, its distance from the equator,
+        # along its local meridian.
+        #
+        # This implementation follows the remarkably simple algorithm
+        # by [Bowring (1983)](crate::Bibliography::Bow83).
+        #
+        # See also
+        # [meridian_latitude_to_distance](Meridians::meridian_latitude_to_distance)
+        n = self.third_flattening()
+
+        # A = self.rectifying_radius_bowring()
+        # Inlining since we already have n
+        m = 1.0 + n * n / 8.0
+        A = self.a * m * m / (1.0 + n)
+
+        theta = distance_from_equator / A
+        s = sin(2.0 * theta)
+        c = cos(2.0 * theta)
+        x = 1.0 - 155.0 / 84.0 * n * c
+        y = 0.0 + 155.0 / 84.0 * n * s
+        r = hypot(x, y)
+        v = atan2(y, x)
+
+        C = 1.0 - 9.0 * n * n / 16.0
+        return theta + 63.0 / 4.0 * C * pow(r, 8.0 / 155.0) * sin(8.0 / 155.0 * v)
 
     def cartesian(
         self, longitude: float, latitude: float, height: float
