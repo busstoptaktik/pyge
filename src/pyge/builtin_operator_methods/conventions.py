@@ -59,7 +59,7 @@ gis = OperatorMethod(
 
 
 # ne: (northing, easting) in meter to (easting, northing) in meter
-def ne(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
+def ne_both(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
     if operands.dim() < 2:
         raise ValueError("ne: Cannot handle 1D data")
 
@@ -71,6 +71,6 @@ def ne(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
 # Note: ne is an involution - its inverse is identical to itself
 ne = OperatorMethod(
     id="ne",
-    fwd=ne,
-    inv=ne,
+    fwd=ne_both,
+    inv=ne_both,
 )

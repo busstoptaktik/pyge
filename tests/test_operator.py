@@ -1,9 +1,10 @@
 from pyge.context import OpDirection
 from pyge.operator import Operator
-from pytest import raises
 from pyge.minimal import MinimalContext
 from pyge.coordinateset import CoordinateSetRowWise
-from math import nan
+
+from pytest import raises
+from math import nan, dist
 
 # There are additional Operator-related tests in test_context.py
 
@@ -134,9 +135,9 @@ def test_tmerc():
     for i in range(len(projected)):
         # Since we use the Bowring/Lee formulation, we do not exactly replicate the
         # PROJ results, using the Poder/Engsager/Krüger formulary: Out at 6W, i.e.
-        # 15 degrees from the central meridian, we deviate by 3 mm from PROJ. Closer
+        # 15 degrees from the central meridian, we deviate by 4 mm from PROJ. Closer
         # to the central meridian, the difference is immaterial
-        assert abs(geo[i][0] - projected[i][0]) < 0.005
+        assert dist(geo[i], projected[i]) < 0.005
 
     # We hve overwritten geo, so we make a new copy
     geo = CoordinateSetRowWise(
@@ -149,7 +150,7 @@ def test_tmerc():
         # PROJ results, using the Poder/Engsager/Krüger formulary: Out at 6W, i.e.
         # 15 degrees from the central meridian, we deviate by a few decimeters from
         # PROJ. Closer to the central meridian, the difference is immaterial
-        assert abs(geo[i][0] - projected[i][0]) < 5e-6
+        assert dist(geo[i], projected[i]) < 3e-6
 
 
 def test_utm():
@@ -188,3 +189,36 @@ def test_helmert():
     assert [coord[0], coord[1]] == [[2, 4, 6, 4], [6, 8, 10, 8]]
     ctx.apply(helmert, OpDirection.FWD, coord)
     assert [coord[0], coord[1]] == [[1, 2, 3, 4], [5, 6, 7, 8]]
+
+
+def test_cart():
+    ctx = MinimalContext()
+    assert "cart" in ctx.builtins()
+    cart = ctx.op("geo | cart ellps=GRS80 | cart inv ellps=GRS80 | geo inv")
+
+    # Two dimensional case
+    geo = CoordinateSetRowWise([[55.0, 12.0], [45.0, -6.0], [65.0, 6.0]])
+    ego = CoordinateSetRowWise([[55.0, 12.0], [45.0, -6.0], [65.0, 6.0]])
+    ctx.apply(cart, OpDirection.FWD, ego)
+    for i in range(len(ego)):
+        assert dist(ego[i], geo[i]) < 1e-10
+
+    # Three dimensional case
+    geo = CoordinateSetRowWise(
+        [[55.0, 12.0, 10.0], [45.0, -6.0, 10.0], [65.0, 6.0, 10.0]]
+    )
+    ego = CoordinateSetRowWise(
+        [[55.0, 12.0, 10.0], [45.0, -6.0, 10.0], [65.0, 6.0, 10.0]]
+    )
+    ctx.apply(cart, OpDirection.FWD, ego)
+    for i in range(len(ego)):
+        assert dist(ego[i][0:2], geo[i][0:2]) < 1e-12
+        assert abs(ego[i][2] - geo[i][2]) < 1e-8
+
+    # Two dimensional case, southern hemisphere
+    cart = ctx.op("geo | cart ellps=GRS80 | cart inv south ellps=GRS80 | geo inv")
+    geo = CoordinateSetRowWise([[-55.0, 12.0], [-45.0, -6.0], [-65.0, 6.0]])
+    ego = CoordinateSetRowWise([[-55.0, 12.0], [-45.0, -6.0], [-65.0, 6.0]])
+    ctx.apply(cart, OpDirection.FWD, ego)
+    for i in range(len(ego)):
+        assert dist(ego[i], geo[i]) < 1e-10

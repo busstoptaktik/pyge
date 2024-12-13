@@ -65,8 +65,9 @@ class Ellipsoid:
 
     def meridian_radius_of_curvature(self, latitude: float) -> float:
         """The meridian radius of curvature, *M*"""
-        num = self.semimajor_axis() * (1.0 - self.eccentricity_squared())
-        denom = (1.0 - latitude.sin().powi(2) * self.eccentricity_squared()).powf(1.5)
+        es = self.eccentricity_squared()
+        num = self.semimajor_axis() * (1.0 - es)
+        denom = 1.0 - sin(latitude) ** 2 * pow(es, 1.5)
         return num / denom
 
     def flattening(self) -> float:
