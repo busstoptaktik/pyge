@@ -201,7 +201,7 @@ def test_cart():
     ego = CoordinateSetRowWise([[55.0, 12.0], [45.0, -6.0], [65.0, 6.0]])
     ctx.apply(cart, OpDirection.FWD, ego)
     for i in range(len(ego)):
-        assert dist(ego[i], geo[i]) < 1e-10
+        assert dist(ego[i], geo[i]) < 1e-12
 
     # Three dimensional case
     geo = CoordinateSetRowWise(

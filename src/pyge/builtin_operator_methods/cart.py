@@ -40,10 +40,8 @@ def cart_inverse(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
             if south:
                 latitude = -latitude
             operands[i] = (longitude, latitude)
-            print("TWO")
         else:
             operands[i] = ellps.geographic(x, y, z)
-            print("THREE")
 
     return len(operands)
 
