@@ -1,7 +1,19 @@
-"""Generic abstract class for coordinate tuples.
+"""
+Generic abstract class for coordinate tuples.
 
 Also concrete implementations for 1-4 dimensions:
-Coor1D, Coor2D, Coor3D, Coor4D
+Coor1D, Coor2D, Coor3D, Coor4D.
+
+Note that this class is largely useless: It is here because coordinate tuples are
+part of the ISO 19111 standard, and are conceptually useful. They are, however,
+not particularly practical.
+
+The main interface between application coordinate data and Python Geodesy is via the
+CoordinateSet ABC (or interface in UML lingo), which consists of just 4 methods.
+
+These 4 methods can be implemented for a concrete data storage architecture in
+typically as little as 20 lines of code (cf. `CoordinateSetColumnWise` and
+`CoordinateSetRowWise`, the concrete demo implementations in coordinateset.py)
 """
 
 from abc import ABC, abstractmethod
@@ -20,7 +32,8 @@ class CoordinateTuple(ABC):
     def as_promoted_list(
         self, mask: list[float] | tuple[float] = [nan, nan, 0, nan]
     ) -> list[float]:
-        """Promote the n-dimensional base coordinate tuple to the m-dimensions of the mask.
+        """
+        Promote the n-dimensional base coordinate tuple to the m-dimensions of the mask.
 
         The default value represents the common case of promoting 2D coordinates to 4D
         by providing values interpretable as a zero ellipsoidal height and an undefined

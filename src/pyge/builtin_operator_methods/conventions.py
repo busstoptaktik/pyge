@@ -1,4 +1,4 @@
-"""handle different input/output axis order and unit conventions"""
+"""Handle different input/output axis order and unit conventions"""
 
 from ..context import Context
 from ..coordinateset import CoordinateSet

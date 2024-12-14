@@ -8,9 +8,6 @@ class Ellipsoid:
     Based on the ellipsoid trait from Rust Geodesy
     """
 
-    # a: float = 6378137.0
-    # f: float = 1.0 / 298.2572221008827
-
     def __init__(self, a: float, rf: float):
         self.a = a
         self.f = 1.0 / rf

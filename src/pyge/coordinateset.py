@@ -15,7 +15,7 @@ class CoordinateSet(ABC):
 
     @abstractmethod
     def dim(self) -> int:
-        """Native dimension of the underlying coordinates"""
+        """Native dimension of the underlying coordinate tuples"""
         ...
 
     @abstractmethod
@@ -35,7 +35,9 @@ class CoordinateSet(ABC):
 
         The default value represents the common case of promoting 2D coordinates to 4D
         by providing values interpretable as a zero ellipsoidal height and an undefined
-        time coordinate
+        time coordinate.
+
+        Dimensional promotion may be thought of as "inverted passthrough"
         """
 
         # First, extend the tuple using the tail of the mask
