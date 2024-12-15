@@ -8,7 +8,7 @@ from ..operator_method import OperatorMethod
 from ..operator import Operator
 from ..ellipsoid import Ellipsoid
 from typing import Any
-from math import sin, sinh, cos, radians, atan2, atan, atanh
+from math import sin, sinh, cos, radians, atan2, atan, atanh, nan
 
 
 # Forward transverse mercator, following Bowring (1989)
@@ -54,7 +54,8 @@ def tmerc_forward(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
             m + N * theta_2 + znos4 * (9.0 + ecc + oo * (20.0 * cc - 11.0))
         )
         operands[i] = (easting, northing)
-        successes += 1
+        if (easting is not nan) and (northing is not nan):
+            successes += 1
 
     return successes
 
@@ -100,7 +101,8 @@ def tmerc_inverse(op: Operator, _ctx: Context, operands: CoordinateSet) -> int:
         lon = approx - coef * (10.0 - 4.0 * xx / cc + xx * cc)
 
         operands[i] = (lon, lat)
-        successes += 1
+        if (lon is not nan) and (lat is not nan):
+            successes += 1
 
     return successes
 
